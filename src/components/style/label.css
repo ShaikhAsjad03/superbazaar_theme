@@ -1,0 +1,19 @@
+.label-3d {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+.label-3d::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 0;
+  height: 0;
+  border-bottom: 10px solid #1f2937; 
+  border-right: 10px solid transparent;
+  transform: skewY(10deg) rotateY(15deg);
+  transform-origin: top left;
+  z-index: -1;
+}
