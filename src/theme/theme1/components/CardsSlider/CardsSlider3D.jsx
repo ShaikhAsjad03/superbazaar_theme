@@ -9,14 +9,14 @@ import { ImageUrl } from "@/helper/imageUrl"
 
 const CardsSlider3D = ({ slides }) => {
   return (
-    <div className="w-full  py-10 mt-10">
+    <div className="w-full py-10 mt-10">
       <h1 className="text-3xl text-center mb-6">Shop By Video</h1>
       <Swiper
         effect="coverflow"
         grabCursor
-        centeredSlides={true}
-        loop={true}
-        slidesPerView={5}
+        centeredSlides
+        loop
+        slidesPerView={1} // default
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
@@ -29,28 +29,21 @@ const CardsSlider3D = ({ slides }) => {
           slideShadows: true,
         }}
         pagination={{ clickable: true }}
-         breakpoints={{
-    0: {
-      slidesPerView: 1, 
-    },
-    640: {
-      slidesPerView: 3, 
-    },
-    1024: {
-      slidesPerView: 3, 
-    },
-    1280: {
-      slidesPerView: 5, 
-    },
-  }}
+        breakpoints={{
+          640: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 3 },
+          1280: { slidesPerView: 5 },
+        }}
         modules={[Autoplay, EffectCoverflow, Pagination]}
-        className="max-w-6xl mx-auto"       >
+        className="max-w-6xl mx-auto"
+      >
         {slides.map((item, index) => (
           <SwiperSlide
             key={index}
-            className="!w-[280px] !h-[380px] flex justify-center items-center"
+            className="flex justify-center items-center"
           >
-            <div className="relative w-[280px] h-[380px]">
+            <div className="relative w-[85vw] max-w-[280px] aspect-[3/4]">
               <Image
                 src={ImageUrl(item.image)}
                 alt={`Slide ${index + 1}`}
@@ -59,7 +52,6 @@ const CardsSlider3D = ({ slides }) => {
               />
             </div>
           </SwiperSlide>
-
         ))}
       </Swiper>
     </div>

@@ -46,33 +46,35 @@ export default function CatalogueImages({
                         </div>
                       )}
 
-                      <div className="text-center">
-                        <div className="flex items-center justify-between uppercase text-sm font-medium bg-gray-200 p-2">
-                          <div className="flex flex-col items-start">
-                            {item?.average_price && (
-                              <span className="whitespace-normal">
-                                Price:{" "}
-                                <PriceConverter price={item?.average_price} />
-                              </span>
-                            )}
-                            <span className="whitespace-normal">
-                              SKU: {item.sku}
-                            </span>
-                          </div>
+                   <div className="text-center">
+  <div className="flex flex-col items-start gap-2 uppercase text-xs sm:text-sm md:text-base font-medium bg-gray-200 p-2">
+    <div className="flex flex-col items-start">
+      {item?.average_price && (
+        <span className="whitespace-normal">
+          Price: <PriceConverter price={item?.average_price} />
+        </span>
+      )}
+      <span className="whitespace-normal">SKU: {item.sku}</span>
+    </div>
 
-                          {item.showInSingle === true && (
-                            <Link
-                              href={
-                                brandpath === "brands"
-                                  ? `/brands/retail/${category}/${item.url}`
-                                  : `/retail/${category}/${item.url}`
-                              }
-                            >
-                              <Eye className="w-5 h-5 text-indigo-500 hover:text-black transition" />
-                            </Link>
-                          )}
-                        </div>
-                      </div>
+    {item.showInSingle === true && (
+      <Link
+        href={
+          brandpath === "brands"
+            ? `/brands/retail/${category}/${item.url}`
+            : `/retail/${category}/${item.url}`
+        }
+        className="w-full"
+      >
+        <button className="w-full px-3 py-1.5 text-xs sm:text-sm md:text-base font-medium rounded-md border border-zinc-500 text-zinc-900 transition-all duration-300 hover:bg-zinc-900 hover:text-white">
+          View Single
+        </button>
+      </Link>
+    )}
+  </div>
+</div>
+
+
                     </div>
                   </div>
                 );

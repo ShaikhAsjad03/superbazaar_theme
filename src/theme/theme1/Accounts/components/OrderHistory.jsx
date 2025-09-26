@@ -6,6 +6,7 @@ import Pagination from "../../../../components/Pagination";
 import { useSession } from "next-auth/react";
 import { postuserOrderHistory } from "@/services/accountsService";
 import Link from "next/link";
+import PriceConverter from "@/components/PriceConverter";
 
 const statusColors = {
   PENDING: "bg-yellow-100 text-yellow-700",
@@ -71,7 +72,7 @@ const OrderHistorythem1 = () => {
           </select>
         </div>
       </div>
-      <div className="relative overflow-x-auto shadow-lg sm:rounded-xl hidden md:block">
+      <div className="relative overflow-x-auto shadow-lg sm:rounded-xl ">
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs uppercase bg-gradient-to-r from-gray-100 to-gray-200">
             <tr>
@@ -106,7 +107,7 @@ const OrderHistorythem1 = () => {
                 </td>
                 <td className="px-6 py-4">{order.orderDate}</td>
                 <td className="px-6 py-4 font-semibold text-gray-800">
-                  ₹ {order.amount}
+                  <PriceConverter price={order.amount}/>
                 </td>
                 <td className="px-6 py-4">
                   <span
@@ -153,45 +154,7 @@ const OrderHistorythem1 = () => {
       </div>
 
 
-      <div className="md:hidden space-y-4 mt-6">
-        {orders && orders?.length > 0 && orders?.map((order, idx) => (
-          <div
-            key={idx}
-            className="border rounded-xl shadow-lg p-4 bg-white space-y-2 hover:shadow-xl transition"
-          >
-            <p className="text-sm">
-              <span className="font-semibold">Order ID:</span> {order.orderId}
-            </p>
-            <p className="text-sm">
-              <span className="font-semibold">Date:</span> {order.orderDate}
-            </p>
-            <p className="text-sm">
-              <span className="font-semibold">Amount:</span> ₹ {order.amount}
-            </p>
-            <p className="text-sm">
-              <span className="font-semibold">Order Status:</span>{" "}
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[order.orderStatus] || "bg-gray-100 text-gray-600"
-                  }`}
-              >
-                {order.orderStatus}
-              </span>
-            </p>
-            <p className="text-sm">
-              <span className="font-semibold">Payment Status:</span>{" "}
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[order.paymentStatus] || "bg-gray-100 text-gray-600"
-                  }`}
-              >
-                {order.paymentStatus}
-              </span>
-            </p>
-            <button className="p-2 rounded-full hover:bg-blue-100 transition">
-              <Eye className="w-5 h-5 text-blue-600" />
-            </button>
-          </div>
-        ))}
-      </div>
+     
 
       <div className="flex justify-center items-center mt-8">
         <Pagination

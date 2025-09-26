@@ -115,61 +115,93 @@ const Catalogue = ({ CatalogueDetailData, stitching, category }) => {
                             <StitchingForm stitchingData={stitching || []} onChange={setStitchingData} />
                         )}
 
-                        <div className="flex items-center gap-4 mt-4">
-                            <div className="flex items-center border rounded-lg overflow-hidden w-40">
-                                <button
-                                    onClick={decrement}
-                                    className="w-12 py-2 bg-gray-200 hover:bg-gray-300 transition text-lg font-bold">
-                                    -
-                                </button>
-                                <span className="flex-1 text-center py-2 text-lg font-medium">
-                                    {quantity}
-                                </span>
-                                <button
-                                    onClick={increment}
-                                    className="w-12 py-2 bg-gray-200 hover:bg-gray-300 transition text-lg font-bold">
-                                    +
-                                </button>
-                            </div>
-                            <WishlistButton variant="detail" catalogueId={CatalogueDetailData?.id} type="catalogue" loginMode="page" />
-                            <button
-                                onClick={() => setShareOpen(true)}
-                                className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition">
-                                <Share2 className="w-5 h-5" />
-                            </button>
-                            <button
-                                onClick={() => setInquiry((prev) => !prev)}
-                                className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition">
-                                <CircleQuestionMark className="w-5 h-5" />
-                            </button>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 mt-4">
+  <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto mb-2 sm:mb-0">
+    <div className="flex items-center border rounded-lg overflow-hidden w-full sm:w-40">
+      <button
+        onClick={decrement}
+        className="w-12 py-2 bg-gray-200 hover:bg-gray-300 transition text-lg font-bold"
+      >
+        -
+      </button>
+      <span className="flex-1 text-center py-2 text-lg font-medium">
+        {quantity}
+      </span>
+      <button
+        onClick={increment}
+        className="w-12 py-2 bg-gray-200 hover:bg-gray-300 transition text-lg font-bold"
+      >
+        +
+      </button>
+    </div>
 
-                            <button
-                                onClick={() => { downloadAllImages(CatalogueDetailData) }}
-                                className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition">
-                                <Download className="w-5 h-5" />
-                            </button>
+   
+  </div>
 
-                            <button
-                                onClick={() => { ImageZip(CatalogueDetailData) }}
-                                className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition">
-                                <FolderArchive className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <div className="flex flex-row gap-4 mt-4 w-full">
-                            <button
-                                disabled={loading}
-                                onClick={handleAddtoCart}
-                                className="w-full flex items-center justify-center bg-zinc-900 text-white px-6 py-3 rounded-lg  transition disabled:opacity-70 gap-2"
-                            >
-                                <span className="flex gap-2"> <ShoppingCart />Add to Cart</span>
-                                {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                            </button>
+  <div className="flex gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+    
+    <WishlistButton
+      variant="detail"
+      catalogueId={CatalogueDetailData?.id}
+      type="catalogue"
+      loginMode="page"
+      className="w-full sm:w-auto"
+    />
 
-                            <button className="w-full flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
-                                <MessageCircle className="w-5 h-5" />
-                                Order on WhatsApp
-                            </button>
-                        </div>
+    <button
+      onClick={() => setShareOpen(true)}
+      className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition"
+    >
+      <Share2 className="w-5 h-5" />
+    </button>
+
+    <button
+      onClick={() => setInquiry((prev) => !prev)}
+      className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition"
+    >
+      <CircleQuestionMark className="w-5 h-5" />
+    </button>
+
+    <button
+      onClick={() => downloadAllImages(CatalogueDetailData)}
+      className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition"
+    >
+      <Download className="w-5 h-5" />
+    </button>
+
+    <button
+      onClick={() => ImageZip(CatalogueDetailData)}
+      className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition"
+    >
+      <FolderArchive className="w-5 h-5" />
+    </button>
+  </div>
+</div>
+
+                       <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4 w-full">
+  <button
+    disabled={loading}
+    onClick={handleAddtoCart}
+    className="w-full flex items-center justify-center bg-zinc-900 text-white 
+               px-4 py-2 sm:px-6 sm:py-3 rounded-lg transition disabled:opacity-70 gap-2
+               text-sm sm:text-base"
+  >
+    <span className="flex gap-2 items-center">
+      <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+      Add to Cart
+    </span>
+    {loading && <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />}
+  </button>
+  <button
+    className="w-full flex items-center justify-center gap-2 bg-green-700 text-white 
+               px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-green-600 transition
+               text-sm sm:text-base"
+  >
+    <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+    Order on WhatsApp
+  </button>
+</div>
+
                         {errors && (
                             <div className="bg-red-200 border border-dotted border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 flex items-start justify-between" role="alert">
                                 <div>
@@ -190,7 +222,6 @@ const Catalogue = ({ CatalogueDetailData, stitching, category }) => {
             </div>
 
             <div className="w-full mt-10">
-                <h1 className="text-2xl font-normal text-center mb-10">You May Also Like this</h1>
                 <RalatedCatalogue url={CatalogueDetailData.url} />
             </div>
 

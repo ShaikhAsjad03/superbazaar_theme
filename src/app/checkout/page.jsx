@@ -7,6 +7,7 @@ import OrderSummary from "./components/OrderSummary";
 import { useSelector } from "react-redux";
 import ShippingMethod from "./components/ShippingMethod";
 import { postCCAvenueOrder, postOrder } from "@/services/checkOutService";
+import Loading from "../loading";
 
 const CheckoutPage = () => {
   const [country, setCountry] = useState("India");
@@ -80,19 +81,27 @@ const CheckoutPage = () => {
     }
   };
 
+  if (!CartData?.data || !Array.isArray(CartData.data) || CartData.data.length === 0) {
+    return <Loading/>
+  }
   return (
     <div className="w-full">
 
       <div className="w-full h-[200px] flex flex-col justify-center items-center bg-gradient-to-r from-indigo-100 via-white to-indigo-100">
         <h1 className="text-2xl font-medium">Secure Checkout</h1>
-        <div className="rounded-b-lg bg-white p-2 flex justify-center items-center gap-3 mt-3">
-          <span className="flex flex-row gap-1 font-medium">
-            We Accept Here <ArrowRightFromLine size={18} className="mt-1" />
-          </span>
-          <img src="/chekout.svg" style={{ height: "30px" }} />
-        </div>
+      <div className="rounded-b-lg bg-white p-2 flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3 mt-3">
+  <span className="flex flex-row gap-1 font-medium text-sm sm:text-base">
+    We Accept Here <ArrowRightFromLine size={18} className="mt-1" />
+  </span>
+  <img
+    src="/chekout.svg"
+    className="h-6 sm:h-8 w-auto"
+    alt="Accepted Payment Methods"
+  />
+</div>
+
       </div>
-      <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-100">
         <div>
           <Address
             onCountryChange={(c) => setCountry(c)}

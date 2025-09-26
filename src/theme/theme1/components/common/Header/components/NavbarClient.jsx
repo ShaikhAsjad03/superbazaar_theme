@@ -35,16 +35,14 @@ const NavbarClient = ({ Menudata, currencyData }) => {
   const { open } = useModal();
   const dispatch = useDispatch();
   const { data: session } = useSession();
+   const { CartData } = useSelector((state) => state.cartItem);
+   const cartCount = CartData?.data?.length || 0
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { list } = useSelector((state) => state.wishlist);
-  const [token, setToken] = useState(null);
-
-useEffect(() => {
-  setToken(localStorage.getItem("token"));
-}, []);
+  const token =typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const fetchProtectedData = async () => {
     const [wishlist, cartItems] = await Promise.all([
@@ -89,6 +87,7 @@ useEffect(() => {
   const handleCartClick = () => dispatch(openCart());
   const handleLogout = async () => {
     signOut({ redirect: false });
+    localStorage.removeItem("token")
     router.push("/");
   };
 
@@ -118,6 +117,7 @@ useEffect(() => {
           </div>
 
           <div className="sm:hidden flex justify-center">
+            <Link href="/">
             <Image
               src="/logo.png"
               alt="Superbazaar Logo"
@@ -126,6 +126,7 @@ useEffect(() => {
               height={100}
               priority
             />
+            </Link>
           </div>
         </div>
         <div
@@ -145,19 +146,27 @@ useEffect(() => {
               {list?.product?.length > 0 || list?.catalogue?.length > 0 ? (
                 <Link href={"/account/wishlist"}>
                   <Heart
-                    className="fill-red-500 text-red-500 sm:block w-5 h-5 sm:w-6 sm:h-6"
+                    className="fill-red-500 text-red-500 hidden sm:block w-5 h-5 sm:w-6 sm:h-6"
                   />
                 </Link>
               ) : (
                 <Link href={"/account/wishlist"}>
-                  <Heart className="cursor-pointer text-zinc-800 sm:block w-5 h-5 sm:w-6 sm:h-6"
+                  <Heart className="cursor-pointer text-zinc-800 hidden sm:block w-5 h-5 sm:w-6 sm:h-6"
                   />
                 </Link>
               )}
-              <ShoppingBag
-                className="cursor-pointer text-zinc-800 hidden sm:block w-5 h-5 sm:w-6 sm:h-6"
-                onClick={handleCartClick}
-              />
+        <div className="relative cursor-pointer" onClick={handleCartClick}>
+  <ShoppingBag className="text-zinc-800 w-5 h-5" />
+
+  {cartCount > 0 && (
+    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px] sm:text-xs font-semibold rounded-full flex items-center justify-center h-4 min-w-4 px-[2px] shadow-md">
+      {cartCount > 99 ? "99+" : cartCount}
+    </span>
+  )}
+</div>
+
+
+
             </>
           )}
 

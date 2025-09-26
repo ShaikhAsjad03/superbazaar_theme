@@ -83,13 +83,13 @@ export default function StitchingForm({ stitchingData, onChange }) {
                 <div key={section.id} className="space-y-1">
                     <h2 className="text-lg font-semibold">{section.name}</h2>
                     {section.stitchingOption.some((o) => o.type === "Redio") && (
-                        <div className="flex flex-wrap gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                             {section.stitchingOption.map(
                                 (option) =>
                                     option.type === "Redio" && (
                                         <label
                                             key={option.id}
-                                            className={`px-6 py-4 min-w-[160px] min-h-[100px] flex flex-col items-center justify-center border rounded-xl cursor-pointer text-center transition ${selectedStitch === option.id
+                                            className={`px-6 py-4 w-full min-w-[160px] min-h-[100px] flex flex-col items-center justify-center border rounded-xl cursor-pointer text-center transition ${selectedStitch === option.id
                                                 ? "border-red-500 bg-red-50"
                                                 : "border-gray-300 hover:border-gray-400"
                                                 }`}

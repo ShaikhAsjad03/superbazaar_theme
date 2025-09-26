@@ -18,6 +18,7 @@ const TestimonialSlider = () => {
         fetchdata()
     }, [])
     return (
+        data && data?.length > 0 && (
         <div className="mt-10 w-full bg-gradient-to-r from-indigo-100 via-white to-indigo-100 py-16">
             <div className="container mx-auto text-center">
                 <h2 className="text-3xl md:text-3xl font-bold text-gray-800 mb-4">
@@ -40,11 +41,11 @@ const TestimonialSlider = () => {
                     }}
                     className="max-w-7xl mx-auto"
                 >
-                    {data && data?.length > 0 && data?.map((item, index) => (
+                    { data?.map((item, index) => (
                         <SwiperSlide key={index}>
                             <div className="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center text-center relative h-full">
                                 <Quote className="absolute top-1 left-4 text-indigo-400 w-8 h-8 opacity-70" />
-                                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden shadow-lg mb-4 border-4 border-indigo-100">
+                                <div className="w-20 h-22 md:w-24 md:h-24 rounded-full overflow-hidden shadow-lg mb-4 border-4 border-indigo-100">
                                     <Image
                                         src={ImageUrl(item.image)}
                                         alt={item?.customer_name || "Client testimonial image"}
@@ -65,6 +66,7 @@ const TestimonialSlider = () => {
                 </Swiper>
             </div>
         </div>
+        )
     )
 }
 

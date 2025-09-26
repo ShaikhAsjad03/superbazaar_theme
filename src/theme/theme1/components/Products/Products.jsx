@@ -22,7 +22,13 @@ const Products = ({ tabsData = [], purchaseType }) => {
       : activeTabData?.products?.products
 
   return (
-    <div className="container mx-auto px-4 mt-7">
+    <div className="mx-auto px-4 mt-10  
+  w-full 
+  sm:max-w-[540px] 
+  md:max-w-[720px] 
+  lg:max-w-[960px] 
+  xl:max-w-[1240px]
+  2xl:max-w-[1320px]">
       <div className="w-full flex justify-center items-center gap-6 mb-4">
         {tabsData.map((tab) => (
           <button
@@ -38,7 +44,7 @@ const Products = ({ tabsData = [], purchaseType }) => {
           </button>
         ))}
       </div>
-      <div className="relative mx-auto px-4 sm:px-6 md:px-0 w-full">
+      <div className="relative mx-auto px-0 sm:px-6 md:px-0 w-full">
         <SliderNavigation position="center" />
         <Swiper
           grabCursor

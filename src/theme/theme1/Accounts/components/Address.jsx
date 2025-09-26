@@ -75,20 +75,21 @@ const AddressTheme1 = () => {
     }
   }
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between">
-        <h1 className="text-xl font-semibold mb-4">Address Page</h1>
-        <button
-          onClick={() => {
-            resetForm();
-            setEditIndex(null);
-            setShowForm(!showForm);
-          }}
-          className="mb-4 px-5 py-2 bg-zinc-800 text-white rounded-lg shadow-md hover:bg-zinc-600 transition"
-        >
-          {showForm ? "Cancel" : "Add Address"}
-        </button>
-      </div>
+    <div className="">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-0">
+  <h1 className="text-lg sm:text-xl font-semibold">{`Address Page`}</h1>
+  <button
+    onClick={() => {
+      resetForm();
+      setEditIndex(null);
+      setShowForm(!showForm);
+    }}
+    className="px-4 sm:px-5 py-2 bg-zinc-800 text-white rounded-lg shadow-md hover:bg-zinc-600 transition w-full sm:w-auto"
+  >
+    {showForm ? "Cancel" : "Add Address"}
+  </button>
+</div>
+
       <div
         className={`overflow-hidden transition-all duration-500 ${showForm
           ? "max-h-[1500px] opacity-100 scale-100"

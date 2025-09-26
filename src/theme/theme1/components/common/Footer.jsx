@@ -12,67 +12,75 @@ import { ImageUrl } from "@/helper/imageUrl"
 import { newsLetter } from "@/services/newsLetter"
 
 const Footer = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const [openSection, setOpenSection] = useState(null)
   const { data } = useSelector((state) => state?.categorystore)
   const [cmsData, setCmsData] = useState([])
   const [socialIcons, setSocialIcons] = useState([])
   const [webSetting, setWebSettingState] = useState({})
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState("")
+  const [isReady, setIsReady] = useState(false)
+
   const fetchData = async () => {
-    const [webData, cmsDataResp, socialIconData] = await Promise.all([
-      getWebSetting(),
-      getPolicies(),
-      getSocialIcon()
-    ])
-    setCmsData(cmsDataResp?.data)
-    setSocialIcons(socialIconData?.data)
-    setWebSettingState(webData)
-    dispatch(setWebSetting(webData));
+    try {
+      const [webData, cmsDataResp, socialIconData] = await Promise.all([
+        getWebSetting(),
+        getPolicies(),
+        getSocialIcon(),
+      ])
+      setCmsData(cmsDataResp?.data)
+      setSocialIcons(socialIconData?.data)
+      setWebSettingState(webData)
+      dispatch(setWebSetting(webData))
+      setIsReady(true) 
+    } catch (err) {
+      console.error("Error loading footer data:", err)
+    }
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const toggleSection = (index) => {
     setOpenSection(openSection === index ? null : index)
   }
 
   const handleNewsLetter = async (e) => {
-    e.preventDefault();
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    e.preventDefault()
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address.");
-      return;
+      setError("Please enter a valid email address.")
+      return
     }
 
-    setError("");
-    setLoading(true);
+    setError("")
+    setLoading(true)
 
     try {
-      const response = await newsLetter({ email: email });
+      const response = await newsLetter({ email })
       if (response.message) {
         setSuccess(response.message)
       }
       if (response.data?.message) {
-        setEmail("");
-
-        toast.success(response.data.message);
+        setEmail("")
+        toast.success(response.data.message)
       } else {
-        setError(response.data?.message);
+        setError(response.data?.message)
       }
     } catch (err) {
-      console.error(err, "Something went wrong while submitting.");
+      console.error(err, "Something went wrong while submitting.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
+  if (!isReady) {
+    return null 
+  }
 
   return (
     <footer className="w-full mt-10 bg-zinc-950 text-white relative overflow-hidden">
@@ -115,20 +123,34 @@ const Footer = () => {
               {openSection === 0 ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </span>
           </div>
-          <div className={`transition-all duration-300 overflow-hidden ${openSection === 0 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"}`}>
+          <div
+            className={`transition-all duration-300 overflow-hidden ${
+              openSection === 0 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"
+            }`}
+          >
             <ul className="space-y-2 text-sm text-gray-300">
-              {data && data?.length > 0 && data.map((item, i) => {
-                return (
+              {data &&
+                data?.length > 0 &&
+                data.map((item, i) => (
                   <li key={i}>
-                    <Link href={item.url === "wholesale" ? "/wholesale" : webSetting?.purchaseType === "wholesale" ? `/wholesale/${item.url}` : `/retail/${item.url}`} className="hover:text-white transition-colors">
+                    <Link
+                      href={
+                        item.url === "wholesale"
+                          ? "/wholesale"
+                          : webSetting?.purchaseType === "wholesale"
+                          ? `/wholesale/${item.url}`
+                          : `/retail/${item.url}`
+                      }
+                      className="hover:text-white transition-colors"
+                    >
                       {item?.name}
                     </Link>
                   </li>
-                )
-              })}
+                ))}
             </ul>
           </div>
         </div>
+
         <div className="flex flex-col">
           <div
             className="flex justify-between items-center border-b border-gray-700 py-2 md:border-none md:py-0 md:block cursor-pointer md:cursor-default"
@@ -140,20 +162,27 @@ const Footer = () => {
             </span>
           </div>
           <div
-            className={`transition-all duration-300 overflow-hidden 
-              ${openSection === 1 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"}`}
+            className={`transition-all duration-300 overflow-hidden ${
+              openSection === 1 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"
+            }`}
           >
             <ul className="space-y-2 text-sm text-gray-300">
-              {cmsData && cmsData?.length > 0 && cmsData.map((item, i) => (
-                <li key={i}>
-                  <Link href={`/policies/${item?.url}`} className="hover:text-white transition-colors">
-                    {item?.title}
-                  </Link>
-                </li>
-              ))}
+              {cmsData &&
+                cmsData?.length > 0 &&
+                cmsData.map((item, i) => (
+                  <li key={i}>
+                    <Link
+                      href={`/policies/${item?.url}`}
+                      className="hover:text-white transition-colors"
+                    >
+                      {item?.title}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>
+
         <div className="flex flex-col gap-3">
           <h2 className="text-lg font-semibold mb-1">Newsletter</h2>
           <p className="text-sm text-gray-400 mb-2">
@@ -171,12 +200,12 @@ const Footer = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
             <button
               type="submit"
               disabled={loading}
-              className={`bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md text-sm font-medium transition-colors${loading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+              className={`bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md text-sm font-medium transition-colors ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
               {loading ? (
                 <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-white"></span>
@@ -187,7 +216,6 @@ const Footer = () => {
           </form>
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           {success && <p className="text-green-600 text-sm ">{success}</p>}
-
         </div>
       </div>
 

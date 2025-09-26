@@ -8,6 +8,7 @@ import WebSettingSlice from "./slice/webSettingSlice";
 import CategorySlice from "./slice/categorySlice"
 import cmsSlice from "./slice/cmsSlice"
 import ThemeSlice from "./slice/themeSlice"
+import pendingActionSlice  from "./slice/pendingActionSlice"
 export const store=configureStore({
     reducer:{
         modal:ModalReucer,
@@ -18,6 +19,7 @@ export const store=configureStore({
         webSetting:WebSettingSlice,
         categorystore:CategorySlice,
         cmsStore:cmsSlice,
-        theme:ThemeSlice
+        theme:ThemeSlice,
+        pendingAction:pendingActionSlice
     }
 })

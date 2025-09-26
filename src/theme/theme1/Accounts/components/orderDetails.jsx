@@ -1,6 +1,7 @@
 "use client";
+
 import BankPayment from "@/app/checkout/components/bankPayment";
-import PaymentMethod from "@/app/checkout/components/paymentMethod";
+import PriceConverter from "@/components/PriceConverter";
 import StitchingOptions from "@/components/StitchingOption";
 import { ImageUrl } from "@/helper/imageUrl";
 import { getOrderDetails } from "@/services/accountsService";
@@ -10,16 +11,12 @@ import { useEffect, useState } from "react";
 const OrderDetail = ({ orderid }) => {
   const [order, setOrder] = useState(null);
   const [openCatalogueIds, setOpenCatalogueIds] = useState([]);
-
-
+  const fetchOrder = async () => {
+    const res = await getOrderDetails(orderid);
+    if (res.isSuccess) setOrder(res.data);
+  };
 
   useEffect(() => {
-    const fetchOrder = async () => {
-      const res = await getOrderDetails(orderid);
-      if (res.isSuccess) {
-        setOrder(res.data);
-      }
-    };
     fetchOrder();
   }, [orderid]);
 
@@ -29,161 +26,108 @@ const OrderDetail = ({ orderid }) => {
     );
   };
 
-
-  const handlePaymentChange = (method) => {
-    setSelectedPayment(method);
-  };
   if (!order) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="animate-pulse text-gray-500 text-lg">
-          Loading order details...
-        </p>
+        <p className="animate-pulse text-gray-500 text-lg">Loading order details...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 space-y-10">
-      <div className="bg-gradient-to-r from-blue-50 to-white shadow-lg rounded-2xl p-6 border border-gray-100 transition hover:shadow-xl duration-300">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              Order #{order.orderId}
-            </h1>
-            <p className="text-gray-500 mt-1">
-              Placed on {order.orderDate}
-            </p>
-          </div>
-          <span
-            className={`px-5 py-2 rounded-full text-sm font-medium shadow-sm transition ${order.status === "PENDING"
+    <div className="max-w-3xl md:max-w-6xl mx-auto px-4 py-10 space-y-8">
+      <div className="bg-gradient-to-r from-blue-50 to-white shadow-lg rounded-2xl p-4 md:p-6 border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Order #{order.orderId}</h1>
+          <p className="text-gray-500 mt-1 text-sm md:text-base">Placed on {order.orderDate}</p>
+        </div>
+        <span
+          className={`mt-2 md:mt-0 px-4 py-1 md:px-5 md:py-2 rounded-full text-sm md:text-sm font-medium shadow-sm ${
+            order.status === "PENDING"
               ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
               : "bg-green-100 text-green-800 border border-green-200"
-              }`}
-          >
-            {order.status}
-          </span>
-        </div>
+          }`}
+        >
+          {order.status}
+        </span>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition duration-300">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
-            Billing Address
-          </h2>
-          <div className="text-gray-600 text-sm space-y-1">
-            <p>{order.billingAddress?.fullName || "N/A"}</p>
-            <p>{order.billingAddress?.address1 || "N/A"}</p>
-            <p>
-              {order.billingAddress?.city}, {order.billingAddress?.state}
-            </p>
-            <p>{order.billingAddress?.country}</p>
-            <p>Zip: {order.billingAddress?.zipCode}</p>
-            <p>Phone: {order.billingAddress?.mobile}</p>
-          </div>
-        </div>
-
-        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition duration-300">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
-            Shipping Address
-          </h2>
-          <div className="text-gray-600 text-sm space-y-1">
-            <p>{order.shippingAddress?.fullName}</p>
-            <p>{order.shippingAddress?.address1}</p>
-            <p>
-              {order.shippingAddress?.city}, {order.shippingAddress?.state}
-            </p>
-            <p>{order.shippingAddress?.country}</p>
-            <p>Zip: {order.shippingAddress?.zipCode}</p>
-            <p>Phone: {order.shippingAddress?.mobile}</p>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        {["Billing Address", "Shipping Address"].map((title, idx) => {
+          const addr = idx === 0 ? order.billingAddress : order.shippingAddress;
+          return (
+            <div
+              key={title}
+              className="bg-white shadow rounded-2xl p-4 md:p-6 border border-gray-100 hover:shadow-md transition duration-300"
+            >
+              <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 border-b pb-1 md:pb-2">
+                {title}
+              </h2>
+              <div className="text-gray-600 text-sm md:text-base space-y-1">
+                <p>{addr?.fullName || "N/A"}</p>
+                <p>{addr?.address1 || "N/A"}</p>
+                <p>
+                  {addr?.city}, {addr?.state}
+                </p>
+                <p>{addr?.country}</p>
+                <p>Zip: {addr?.zipCode}</p>
+                <p>Phone: {addr?.mobile}</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition duration-300">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+      <div className="bg-white shadow rounded-2xl p-4 md:p-6 border border-gray-100 hover:shadow-md transition duration-300">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 border-b pb-1 md:pb-2">
           Order Items
         </h2>
 
-        <div className="hidden md:grid grid-cols-12 text-gray-600 text-sm font-medium border-b pb-2 mb-3">
-          <div className="col-span-6">Product</div>
-          <div className="col-span-2 text-center">Price</div>
-          <div className="col-span-2 text-center">Quantity</div>
-          <div className="col-span-2 text-right">Subtotal</div>
-        </div>
-
-        <div className="divide-y divide-gray-100">
+        <div className="flex flex-col gap-4">
           {order?.orderItems?.map((item) => {
-            let sizeObj;
+            let sizeObj = {};
             try {
               sizeObj = JSON.parse(item.size);
-            } catch {
-              sizeObj = {};
-            }
+            } catch {}
 
             return (
-              <div
-                key={item.id}
-                className="flex flex-col md:grid md:grid-cols-12 items-center md:items-start py-4 gap-4 md:gap-2 group"
-              >
-                <div className="col-span-6 flex gap-4 w-full">
-                  <Image
-                    src={ImageUrl(item.productsnapshots?.image)}
-                    alt={item.name}
-                    width={100}
-                    height={100}
-                    className="rounded-lg object-cover max-h-[120px] shadow-sm group-hover:scale-105 transition duration-300"
-                  />
-                  <div>
-                    <h3 className="font-semibold text-sm md:text-base text-gray-800">
-                      {item.name}
-                    </h3>
-                    {item.productsnapshots.stitching &&
-                      item.productsnapshots.stitching?.length > 0 && (
-                        <StitchingOptions
-                          stitching={item.productsnapshots.stitching}
-                        />
-                      )}
-                    {sizeObj?.value && (
-                      <p className="text-sm text-gray-500">Size: {sizeObj.value}</p>
+              <div key={item.id} className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 border-b last:border-b-0 pb-3">
+                <div className="flex flex-row md:flex-1 gap-3">
+                  <div className="w-20 h-20 md:w-24 md:h-24 relative flex-shrink-0">
+                    <Image
+                      src={ImageUrl(item.productsnapshots?.image)}
+                      alt={item.name}
+                      fill
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-between">
+                    <h3 className="text-sm md:text-base font-semibold text-gray-800">{item.name}</h3>
+                    {item.productsnapshots.stitching && item.productsnapshots.stitching.length > 0 && (
+                      <StitchingOptions stitching={item.productsnapshots.stitching} />
                     )}
+                    {sizeObj?.value && <p className="text-sm text-gray-500">Size: {sizeObj.value}</p>}
 
                     {item?.isCatalogue && item?.products && (
-                      <div className="mt-3">
+                      <div className="mt-2 md:mt-3">
                         <button
                           onClick={() => toggleCatalogue(item.id)}
                           className="text-blue-600 text-sm font-medium underline hover:text-blue-800 transition"
                         >
-                          {openCatalogueIds.includes(item.id)
-                            ? "Hide Products"
-                            : "Show Products"}
+                          {openCatalogueIds.includes(item.id) ? "Hide Products" : "Show Products"}
                         </button>
                         <div
-                          className={`transition-all duration-500 ease-in-out overflow-hidden ${openCatalogueIds.includes(item.id)
-                            ? "max-h-96 opacity-100 mt-3"
-                            : "max-h-0 opacity-0"
-                            }`}
+                          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                            openCatalogueIds.includes(item.id) ? "max-h-72 opacity-100 mt-2" : "max-h-0 opacity-0"
+                          }`}
                         >
-                          <div className="space-y-2 pl-4 border-l">
+                          <div className="space-y-2 pl-3 border-l">
                             {item.products.map((p) => (
-                              <div
-                                key={p.code}
-                                className="flex items-center justify-between text-sm gap-2"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <div className="w-12 h-12 relative flex-shrink-0">
-                                    <Image
-                                      src={ImageUrl(p.image[0])}
-                                      alt={p.name}
-                                      fill
-                                      className="object-contain rounded"
-                                      sizes="48px"
-                                    />
-                                  </div>
-                                  <span className="truncate max-w-[150px]">
-                                    {p.name}
-                                  </span>
+                              <div key={p.code} className="flex items-center gap-2 text-sm">
+                                <div className="w-12 h-12 relative flex-shrink-0">
+                                  <Image src={ImageUrl(p.image[0])} alt={p.name} fill className="object-contain rounded" />
                                 </div>
+                                <span className="truncate">{p.name}</span>
                               </div>
                             ))}
                           </div>
@@ -192,14 +136,11 @@ const OrderDetail = ({ orderid }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-span-2 text-center font-medium text-gray-700">
-                  ₹{item.productsnapshots?.price}
-                </div>
-                <div className="col-span-2 text-center text-gray-700">
-                  {item.quantity}
-                </div>
-                <div className="col-span-2 text-right font-semibold text-gray-800">
-                  ₹{item.productsnapshots?.subtotal}
+
+                <div className="flex flex-row md:flex-col md:items-end justify-between mt-2 md:mt-0 gap-2 md:gap-1 w-full md:w-auto text-sm md:text-base text-gray-700">
+                  <PriceConverter price={item.productsnapshots?.price || 0} />
+                  <span>{item.quantity}</span>
+                  <PriceConverter price={item.productsnapshots?.subtotal || 0} className="font-semibold text-gray-800" />
                 </div>
               </div>
             );
@@ -207,60 +148,44 @@ const OrderDetail = ({ orderid }) => {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition duration-300">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
-            Payment Summary
-          </h2>
-          <div className="space-y-2 text-sm text-gray-600">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>₹{order.subtotal}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Tax</span>
-              <span>₹{order.Tax}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Discount</span>
-              <span>- ₹{order.discount}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span>₹{order.shippingcharge}</span>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-white shadow rounded-2xl p-4 md:p-6 border border-gray-100 hover:shadow-md transition duration-300">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 border-b pb-1 md:pb-2">Payment Summary</h2>
+          <div className="space-y-2 text-sm md:text-base text-gray-600">
+            {[
+              { label: "Subtotal", value: order.subtotal },
+              { label: "Tax", value: order.Tax },
+              { label: "Discount", value: 0 },
+              { label: "Shipping", value: order.shippingcharge },
+            ].map((item) => (
+              <div key={item.label} className="flex justify-between">
+                <span>{item.label}</span>
+                <PriceConverter price={item.value || 0} />
+              </div>
+            ))}
             <hr className="my-2" />
-            <div className="flex justify-between font-semibold text-gray-800 text-lg">
+            <div className="flex justify-between font-semibold text-gray-800 text-base md:text-lg">
               <span>Total</span>
-              <span>₹{order.totalAmount}</span>
+              <PriceConverter price={order.totalAmount || 0} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition duration-300">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
-            Payment Method
-          </h2>
-
-          <div
-            className="flex flex-col md:flex-row md:justify-between items-start md:items-center text-gray-600 py-2 border-b last:border-b-0">
+        <div className="bg-white shadow rounded-2xl p-4 md:p-6 border border-gray-100 hover:shadow-md transition duration-300">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 border-b pb-1 md:pb-2">Payment Method</h2>
+          <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center text-gray-600 py-2 border-b last:border-b-0">
             <span className="capitalize font-medium">{order?.payment[0]?.paymentMethod}</span>
             <span
-              className={`mt-1 md:mt-0 px-3 py-1 rounded-full text-sm font-medium ${order?.payment[0]?.status === "PENDING"
-                ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                : "bg-green-100 text-green-800 border border-green-200"
-                }`}
+              className={`mt-1 md:mt-0 px-3 py-1 rounded-full text-sm font-medium ${
+                order?.payment[0]?.status === "PENDING"
+                  ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                  : "bg-green-100 text-green-800 border border-green-200"
+              }`}
             >
               {order?.payment[0]?.status}
             </span>
           </div>
-
-
-          {order?.payment[0]?.status === "PENDING" && (
-            <BankPayment orderId={orderid} />
-          )}
-          {/* {order.payment.map((p, idx) => (
-          ))} */}
+          {order?.payment[0]?.status === "PENDING" && <BankPayment orderId={orderid} cb={fetchOrder}/>}
         </div>
       </div>
     </div>

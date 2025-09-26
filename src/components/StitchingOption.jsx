@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ArrowBigDown, Eye, Scissors } from "lucide-react";
+import { Eye, Scissors } from "lucide-react";
 import "./style/StitchingOption.css"
 import PriceConverter from "./PriceConverter";
 const StitchingOptions = ({ stitching }) => {
@@ -12,7 +12,6 @@ const StitchingOptions = ({ stitching }) => {
         <div className="text-sm">
             <p className="font-medium flex items-center gap-1">
                 Stitching:
-                <ArrowBigDown className="text-red-500" size={14} />
             </p>
             <ul className="list-disc ml-1 space-y-1">
                 {stitching.map((s, idx) => {

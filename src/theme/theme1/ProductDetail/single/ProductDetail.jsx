@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { CircleQuestionMark, Heart, MessageCircle, Repeat, Share2, ShoppingCart, X } from "lucide-react";
 import OfferBanner from "@/components/OfferBanner";
 import ProductImageGallery from "./components/ProductImageGallery";
 import { useSession } from "next-auth/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openCart } from "@/store/slice/MiniCartSlice";
 import { useModal } from "@/hooks/useModal";
 import { addToCartProduct, getCartItems } from "@/services/cartService";
@@ -13,6 +13,8 @@ import { setCartItems } from "@/store/slice/cartItemSlice";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { ImageUrl } from "@/helper/imageUrl";
+import { clearPendingAction, setPendingAction } from "@/store/slice/pendingActionSlice";
+import { performAddToCart } from "@/helper/performAddToCart";
 const SizeSelector = dynamic(() => import("@/components/SizeSelector"));
 const SharePopup = dynamic(() => import("./components/SharePopup"));
 const RalatedProduct = dynamic(() => import("./components/RelatedProduct"));
@@ -25,6 +27,7 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
   const dispatch = useDispatch()
   const { open } = useModal();
   const { data: session, status } = useSession();
+  const pendingAction = useSelector((state) => state.pendingAction);
   const [inquiry, setInquiry] = useState(false)
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -38,6 +41,21 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
   const decrement = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   const toggleWishlist = () => setWishlist((prev) => !prev);
   const toggleCompare = () => setCompare((prev) => !prev);
+ const token =typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+
+  useEffect(() => {
+  if (session?.accessToken && pendingAction?.type === "ADD_TO_CART" && token) {
+    performAddToCart(
+      pendingAction.payload,
+      session.user.id,
+      dispatch,
+      setLoading,
+      setErrors
+    );
+    dispatch(clearPendingAction());
+  }
+}, [session?.accessToken, pendingAction,token]);
 
   const handleAddtoCart = async () => {
     setErrors(null);
@@ -54,29 +72,47 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
       }
     }
     if (!session?.accessToken) {
+       dispatch(setPendingAction({
+      type: "ADD_TO_CART",
+      payload: {
+        product_id: product.id,
+        quantity,
+        ...(product.optionType === "Size" && { size: selectedSize }),
+        ...(product.optionType === "Stitching" && { stitching: stitchingData?.stitching || [] }),
+      }
+    }));
       open("login")
       return
     }
 
-    setLoading(true);
-    try {
-      const finalCartData = {
+
+     const finalCartData = {
         product_id: product.id,
         quantity: quantity,
         user_id: session?.user?.id,
         ...(product.optionType === "Size" && { size: selectedSize }),
         ...(product.optionType === "Stitching" && { stitching: stitchingData?.stitching || [] }),
       };
+   await performAddToCart(
+    finalCartData,
+    session?.user?.id,
+    dispatch,
+    setLoading,
+    setErrors
+  );
+    // setLoading(true);
+    // try {
+     
 
-      const response = await addToCartProduct(finalCartData)
-      if (response?.isSuccess) {
-        const fetchCartData = await getCartItems(session?.user?.id)
-        dispatch(setCartItems(fetchCartData))
-        dispatch(openCart())
-      }
-    } finally {
-      setLoading(false);
-    }
+    //   const response = await addToCartProduct(finalCartData)
+    //   if (response?.isSuccess) {
+    //     const fetchCartData = await getCartItems(session?.user?.id)
+    //     dispatch(setCartItems(fetchCartData))
+    //     dispatch(openCart())
+    //   }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
 
@@ -90,31 +126,40 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
         </div>
 
         <div className="flex flex-col gap-4 md:gap-4">
-          <div>
-            {product?.ProductBrand?.map((item, index) => (
-              <Link
-                key={index}
-                href={`/brand/${item.brand.url}`}
-                className="text-blue-600 hover:underline">
-                {item.brand.name}
-              </Link>
-            ))}
-            <div>
-              <span>View Full Catalogue: </span>
-              {product?.catalogue?.url && (
-                <Link
-                  href={`/catalogue/${category}/${product?.catalogue?.url}`}
-                  className="text-blue-600 hover:underline">
-                  {product?.catalogue?.name}
-                </Link>
-              )}
-            </div>
-            <h1 className="text-xl font-medium">{product?.name}</h1>
-            <p className="text-gray-500 mt-1">{product?.sku}</p>
-            <p className="text-xl font-semibold mt-2">
-              ₹{product?.offer_price}
-            </p>
-          </div>
+         <div className="w-full space-y-2 sm:space-y-3">
+  <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+    {product?.ProductBrand?.map((item, index) => (
+      <Link
+        key={index}
+        href={`/brand/${item.brand.url}`}
+        className="text-blue-600 hover:underline"
+      >
+        {item.brand.name}
+      </Link>
+    ))}
+  </div>
+
+  <div className="text-xs sm:text-sm">
+    <span className="text-gray-700">View Full Catalogue: </span>
+    {product?.catalogue?.url && (
+      <Link
+        href={`/catalogue/${category}/${product?.catalogue?.url}`}
+        className="text-blue-600 hover:underline"
+      >
+        {product?.catalogue?.name}
+      </Link>
+    )}
+  </div>
+
+  <h1 className="text-sm sm:text-xl md:text-2xl font-medium">
+    {product?.name}
+  </h1>
+  <p className="text-gray-500 text-xs sm:text-sm ">{product?.sku}</p>
+  <p className="text-sm sm:text-xl font-semibold mt-2">
+    ₹{product?.offer_price}
+  </p>
+</div>
+
           <p className="flex items-center gap-2 bg-slat-100 text-zinc-800 font-medium px-3 py-1 rounded-lg w-fit">
             <span className="font-bold">⏱</span> Dispatch Time: 7 Working Days
           </p>
@@ -169,21 +214,33 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
             </button>
           </div>
 
-          <div className="flex flex-row gap-4 mt-4 w-full">
-            <button
-              disabled={loading}
-              onClick={handleAddtoCart}
-              className="w-full flex items-center justify-center bg-zinc-900 text-white px-6 py-3 rounded-lg  transition disabled:opacity-70 gap-2"
-            >
-              <span className="flex gap-2"> <ShoppingCart />Add to Cart</span>
-              {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-            </button>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4 w-full">
+  <button
+    disabled={loading}
+    onClick={handleAddtoCart}
+    className="w-full flex items-center justify-center 
+               bg-zinc-900 text-white 
+               px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base 
+               rounded-lg transition disabled:opacity-70 gap-2"
+  >
+    <span className="flex gap-2 items-center">
+      <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+      Add to Cart
+    </span>
+    {loading && <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />}
+  </button>
 
-            <button className="w-full flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
-              <MessageCircle className="w-5 h-5" />
-              Order on WhatsApp
-            </button>
-          </div>
+  <button
+    className="w-full flex items-center justify-center 
+               gap-2 bg-green-700 text-white 
+               px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base 
+               rounded-lg hover:bg-green-600 transition"
+  >
+    <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+    Order on WhatsApp
+  </button>
+</div>
+
           {errors && (
             <div className="bg-red-200 border border-dotted border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 flex items-start justify-between" role="alert">
               <div>
@@ -208,7 +265,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
         <ProductDescription description={product.description} attributes={attributes.attributeValues} />
       </div>
       <div className="w-full mt-10">
-        <h1 className="text-2xl font-normal text-center mb-10">You May Also Like this</h1>
         <RalatedProduct url={product.url} />
       </div>
       <SharePopup

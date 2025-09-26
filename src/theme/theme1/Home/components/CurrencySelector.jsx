@@ -44,7 +44,7 @@ const CurrencySelector = ({ currencyData }) => {
           <Image
             src={ImageUrl(selected.flag)}
             alt={selected.code}
-            width={24} // ignored because we’ll use className
+            width={24} 
             height={24}
             className="object-cover"
           />

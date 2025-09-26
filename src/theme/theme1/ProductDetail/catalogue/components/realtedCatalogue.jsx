@@ -19,7 +19,10 @@ const RalatedCatalogue = ({ url }) => {
     fetchdata()
   }, [url])
   return (
-    <div className="relative">
+    catalogue && catalogue?.length > 0 &&(
+      <>
+         <h1 className="text-2xl font-normal text-center mb-10">You May Also Like this</h1>
+          <div className="relative">
       <SliderNavigation position="center" />
 
       <Swiper
@@ -43,7 +46,7 @@ const RalatedCatalogue = ({ url }) => {
           640: { slidesPerView: 3 },
           768: { slidesPerView: 3 },
           1024: { slidesPerView: 3 },
-          1280: { slidesPerView: 5 },
+          1280: { slidesPerView: 4 },
         }}>
         {catalogue && catalogue?.length > 0 && catalogue?.map((data, index) => (
           <SwiperSlide key={index} className="flex justify-center h-10 " >
@@ -52,6 +55,9 @@ const RalatedCatalogue = ({ url }) => {
         ))}
       </Swiper>
     </div>
+      </>
+    )
+   
 
   )
 }

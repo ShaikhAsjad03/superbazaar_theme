@@ -8,8 +8,14 @@ import { ImageUrl } from "@/helper/imageUrl"
 
 const NormalSliderCard = ({ slides }) => {
   return (
-    <div className="container mx-auto px-4 mt-7">
-      <div className="relative mx-auto px-4 sm:px-6 md:px-0 w-full">
+    <div className="mx-auto px-4 mt-10  
+  w-full 
+  sm:max-w-[540px] 
+  md:max-w-[720px] 
+  lg:max-w-[960px] 
+  xl:max-w-[1240px]
+  2xl:max-w-[1320px]">
+      <div className="relative mx-auto  w-full">
         <SliderNavigation
           position="center"
           prevClass={`swiper-button-prev`}
