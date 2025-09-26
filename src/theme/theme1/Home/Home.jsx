@@ -38,9 +38,9 @@ export default async function Home() {
     "full slider": (item) => <FullSlider key={item.id} slides={item.data} />,
     "slider 3d": (item) => <CardsSlider3D key={item.id} slides={item.data} />,
     "cards slider": (item) => <NormalSliderCard key={item.id} slides={item.data} />,
-    "two banner": (item) => <TwoBanner key={item.id} data={item.data} bannergrid={2} htmlContent={item.htmlContent} />,
-    "three banner": (item) => <ThreeFourBanner key={item.id} data={item.data} bannergrid={3} htmlContent={item.htmlContent} />,
-    "four banner": (item) => <ThreeFourBanner key={item.id} data={item.data} bannergrid={4} htmlContent={item.htmlContent} />,
+    "two banner": (item) => <TwoBanner key={item.id} data={item.data} bannergrid={2} htmlContent={item.htmlContent} fullScreen={item.fullScreen}/>,
+    "three banner": (item) => <ThreeFourBanner key={item.id} data={item.data} bannergrid={3} htmlContent={item.htmlContent} fullScreen={item.fullScreen}/>,
+    "four banner": (item) => <ThreeFourBanner key={item.id} data={item.data} bannergrid={4} htmlContent={item.htmlContent} fullScreen={item.fullScreen}/>,
   };
   return (
     <>

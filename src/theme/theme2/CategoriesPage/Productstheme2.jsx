@@ -28,7 +28,7 @@ const Productstheme2 = ({ category, title }) => {
     const productSectionRef = useRef(null);
 
     const handlePageChange = (page) => {
-        setCurrentPage(page);
+        setPage(page);
         productSectionRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 

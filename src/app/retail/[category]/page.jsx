@@ -20,7 +20,7 @@ const RetailCategoryPage = async ({ params }) => {
 
     return (
         <>
-            <CategoryBanner category={category} /> 
+            <CategoryBanner category={category} />
             <Products category={category} title={""} />
         </>
     )

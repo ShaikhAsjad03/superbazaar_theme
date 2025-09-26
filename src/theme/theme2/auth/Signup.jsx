@@ -64,8 +64,8 @@ export default function Signup() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-10 px-4">
-            <div className="bg-white w-full max-w-md p-8 border border-gray-300">
-                <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+            <div className="w-full sm:w-1/2 lg:w-1/4 bg-white shadow-lg rounded-xl border border-gray-200 p-5">
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
                     Create Account
                 </h2>
 
@@ -109,9 +109,7 @@ export default function Signup() {
                                 name="Password"
                                 placeholder="Password"
                                 {...formik.getFieldProps("password")}
-                                className={`w-full border border-gray-300 rounded-lg px-4 py-2 placeholder:text-sm focus:outline-none focus:border-zinc-500 text-gray-700 ${formik.touched.password && formik.errors.password ? "border-red-500 focus:ring-red-400"
-                                    : "border-gray-300 focus:ring-gray-500"
-                                    }`}
+                                className={`w-full border border-gray-300 rounded-lg px-4 py-2 placeholder:text-sm focus:outline-none focus:border-zinc-500 text-gray-700 ${formik.touched.password && formik.errors.password ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-gray-500"}`}
                             />
 
                             <button
@@ -137,9 +135,7 @@ export default function Signup() {
                                 name="confirmPassword"
                                 placeholder="Confirm Password"
                                 {...formik.getFieldProps("confirmPassword")}
-                                className={`w-full border border-gray-300 rounded-lg px-4 py-2 placeholder:text-sm focus:outline-none focus:border-zinc-500 text-gray-700 ${formik.touched.confirmPassword && formik.errors.confirmPassword ? "border-red-500 focus:ring-red-400"
-                                    : "border-gray-300 focus:ring-gray-500"
-                                    }`}
+                                className={`w-full border border-gray-300 rounded-lg px-4 py-2 placeholder:text-sm focus:outline-none focus:border-zinc-500 text-gray-700 ${formik.touched.confirmPassword && formik.errors.confirmPassword ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-gray-500"}`}
                             />
 
                             <button
@@ -164,9 +160,7 @@ export default function Signup() {
                             name="mobile_number"
                             placeholder="Mobile Number"
                             {...formik.getFieldProps("mobile_number")}
-                            className={`w-full border border-gray-300 rounded-lg px-4 py-2 placeholder:text-sm focus:outline-none focus:border-zinc-500 text-gray-700 ${formik.touched.mobile_number && formik.errors.mobile_number ? "border-red-500 focus:ring-red-400"
-                                : "border-gray-300 focus:ring-gray-500"
-                                }`}
+                            className={`w-full border border-gray-300 rounded-lg px-4 py-2 placeholder:text-sm focus:outline-none focus:border-zinc-500 text-gray-700 ${formik.touched.mobile_number && formik.errors.mobile_number ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-gray-500"}`}
                         />
                         {formik.touched.mobile_number && formik.errors.mobile_number && (
                             <span className="text-red-500 text-xs mt-1 block">
@@ -178,10 +172,7 @@ export default function Signup() {
                     <button
                         type="submit"
                         disabled={formik.isSubmitting}
-                        className={`w-full flex items-center justify-center gap-2 py-2 rounded-lg transition ${formik.isSubmitting
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-black hover:bg-red-700 text-white"
-                            }`}
+                        className={`w-full flex items-center justify-center gap-2 py-2 rounded-lg transition ${formik.isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-red-700 text-white"}`}
                     >
                         {formik.isSubmitting ? (
                             <Loader2 className="animate-spin" />

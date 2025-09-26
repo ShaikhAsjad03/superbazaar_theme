@@ -1,15 +1,15 @@
 "use client"
 import { ImageUrl } from "@/helper/imageUrl"
 import Image from "next/image"
-const ThreeFourBanner = ({ data, bannergrid = 4, htmlContent }) => {
+const ThreeFourBanner = ({ data, bannergrid = 4, htmlContent,fullScreen }) => {
   return (
-    <div className="mx-auto px-4 mt-10  
-  w-full 
-  sm:max-w-[540px] 
-  md:max-w-[720px] 
-  lg:max-w-[960px] 
-  xl:max-w-[1240px]
-  2xl:max-w-[1320px]">
+    <div 
+    className={`${
+    fullScreen
+      ? "" 
+      : "mx-auto px-4 mt-10 w-full sm:max-w-[680px] md:max-w-[980px] lg:max-w-[980px] xl:max-w-[1280px] 2xl:max-w-[1320px]"
+  }`}
+  >
       {data?.length > 0 ? (
         <div className={`grid ${bannergrid === 3 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"}`}>
           {data?.map((item, index) => (

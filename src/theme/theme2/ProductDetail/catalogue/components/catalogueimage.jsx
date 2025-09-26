@@ -4,6 +4,10 @@ import Image from "next/image";
 import PriceConverter from "@/components/PriceConverter";
 import { ImageUrl } from "@/helper/imageUrl";
 import { Eye } from "lucide-react";
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { useEffect } from "react";
+
 export default function CatalogueImages({
   selectedSize,
   catalogDetails,
@@ -11,6 +15,18 @@ export default function CatalogueImages({
   brandpath,
   category,
 }) {
+  useEffect(() => {
+    Fancybox.bind("[data-fancybox='gallery']", {
+      Thumbs: {
+        autoStart: true,
+      },
+    });
+
+    return () => {
+      Fancybox.destroy();
+    };
+  }, []);
+
   return (
     <div className="w-full px-2">
       <div className="relative mb-3 md:mb-0">

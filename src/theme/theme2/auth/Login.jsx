@@ -61,10 +61,10 @@ export default function Login() {
 
             <div className="w-full">
                 <Breadcrum name="login" />
-                <div className="h-[450px] flex items-center justify-center bg-gray-50 mb-8">
-                    <div className="container mx-auto px-4">
-                        <div className="grid md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
-                            <div className="bg-white shadow-lg rounded-2xl border border-gray-200 p-8">
+                <div className="min-h-[80vh] flex items-center justify-center bg-gray-50 mb-8 ">
+                    <div className="container mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center max-w-4xl mx-auto px-4">
+                            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 p-4 shadow-inner w-full ">
                                 <h2 className="text-2xl font-semibold mb-6 text-gray-900">
                                     Welcome Back
                                 </h2>
@@ -158,7 +158,7 @@ export default function Login() {
                                 </form>
                             </div>
 
-                            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 p-10 shadow-inner">
+                            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 p-4 shadow-inner w-full">
                                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                                     New Here?
                                 </h2>

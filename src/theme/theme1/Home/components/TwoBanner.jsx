@@ -3,7 +3,7 @@ import { ImageUrl } from "@/helper/imageUrl";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-const TwoBanner = ({ data, htmlContent }) => {
+const TwoBanner = ({ data, htmlContent ,fullScreen}) => {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -12,12 +12,11 @@ const TwoBanner = ({ data, htmlContent }) => {
 
   return (
     <div
-      className="mx-auto px-4 mt-10 w-full
-      sm:max-w-[680px] 
-      md:max-w-[980px] 
-      lg:max-w-[980px] 
-      xl:max-w-[1280px] 
-      2xl:max-w-[1320px]"
+      className={`${
+    fullScreen
+      ? "" 
+      : "mx-auto px-4 mt-10 w-full sm:max-w-[680px] md:max-w-[980px] lg:max-w-[980px] xl:max-w-[1280px] 2xl:max-w-[1320px]"
+  }`}
     >
       {data?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -30,7 +30,7 @@ const MobileNav = ({ handleCartClick, list }) => {
                         <Heart size={20}
                             className="cursor-pointer md:flex text-red-500"
                             fill="currentColor" /> :
-                        <Heart size={20} className="cursor-pointer hidden md:flex" />}
+                        <Heart size={20} className="cursor-pointer  md:flex" />}
                     <span className="text-xs">Wishlist</span>
                 </Link>
 

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
 import ProductAccordion from "./components/ProductAccordion";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ImageUrl } from "@/helper/imageUrl";
 import Breadcrum from "../../components/BreadCrums/Breadcrum";
 import PriceConverter from "@/components/PriceConverter";
@@ -24,8 +24,7 @@ import { setWebSetting } from "@/store/slice/webSettingSlice";
 const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
   const dispatch = useDispatch()
   const router = useRouter();
-  const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
   const [errors, setErrors] = useState(null)
@@ -188,7 +187,7 @@ const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
                         type="submit"
                         className="bg-white hover:bg-black hover:text-white text-black outline-1 px-6 py-2 rounded-md transition"
                       >
-                        add
+                        Add to cart
                         {/* {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : " Add to cart"} */}
                       </button>
                     </div>
