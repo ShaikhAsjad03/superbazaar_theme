@@ -7,8 +7,7 @@ export const getCataloguedetail = async (url) => {
 
     return res.data;
   } catch (error) {
-    console.error("Error fetching product detail:", error);
-    throw error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getCatalogueStitching = async (url) => {
@@ -17,8 +16,7 @@ export const getCatalogueStitching = async (url) => {
     const res = await axiosInstance.get(`/public/catalogue-stitching/${url}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product stitching:", error);
-    throw error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getRelatedCatalogue = async (url) => {
@@ -27,8 +25,7 @@ export const getRelatedCatalogue = async (url) => {
     const res = await axiosInstance.get(`/public/catalogue-realted/${url}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product detail:", error);
-    throw error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 
@@ -40,8 +37,7 @@ export const getAllCatalogue = async (page, category, perPage = 20, sortOption) 
 
     return res.data;
   } catch (error) {
-    console.error("Error fetching product detail:", error);
-    throw error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 

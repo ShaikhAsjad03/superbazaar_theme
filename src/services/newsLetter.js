@@ -5,6 +5,6 @@ export const newsLetter = async (values) => {
         const res = await axiosInstance.post(`/public/newsletter`, values);
         return res.data || {};
     } catch (error) {
-        return error;
+        return { success: false, error: error?.response?.data || error.message };
     }
 };

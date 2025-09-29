@@ -7,7 +7,7 @@ export const getMenu = async () => {
     const res = await axiosInstance.get(`/public/menu`);
     return res.data?.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 
@@ -18,7 +18,7 @@ export const getCurrency = async () => {
     const res = await axiosInstance.get(`/public/currency`);
     return res.data?.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 

@@ -6,7 +6,7 @@ export const getUserInfo = async (id) => {
     const res = await axiosInstance.get(`/users/profile/${id}`);
     return res.data?.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const updateUserInfo = async (id, values) => {
@@ -15,7 +15,7 @@ export const updateUserInfo = async (id, values) => {
     const res = await axiosInstance.put(`/users/${id}`, values);
     return res.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getUserAddress = async (id) => {
@@ -24,7 +24,7 @@ export const getUserAddress = async (id) => {
     const res = await axiosInstance.get(`/users/address/${id}`);
     return res.data?.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const postuserAddress = async (values) => {
@@ -33,7 +33,7 @@ export const postuserAddress = async (values) => {
     const res = await axiosInstance.post(`/users/address`, values);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const deleteUserAddress = async (id) => {
@@ -42,7 +42,7 @@ export const deleteUserAddress = async (id) => {
     const res = await axiosInstance.delete(`/user/address/${id}`);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const postuserOrderHistory = async (values) => {
@@ -51,7 +51,7 @@ export const postuserOrderHistory = async (values) => {
     const res = await axiosInstance.post(`/orders/pagination`, values);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getUserWishlist = async () => {
@@ -63,7 +63,7 @@ export const getUserWishlist = async () => {
     if (error.response && error.response.status === 401) {
       await signOut({ redirect: false });
   localStorage.removeItem("token");
-}    return error;
+}     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const postUserWishlist = async (values) => {
@@ -72,7 +72,7 @@ export const postUserWishlist = async (values) => {
     const res = await axiosInstance.post(`/wishlist`, values);
     return res.data || [];
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 }
 export const getOrderDetails = async (id) => {
@@ -81,6 +81,6 @@ export const getOrderDetails = async (id) => {
     const res = await axiosInstance.get(`/orders/details/${id}`);
     return res.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };

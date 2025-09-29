@@ -5,7 +5,7 @@ export const getPyamentMethod = async (values) => {
     const res = await axiosInstance.get(`/public/payment`);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getShippingMethod = async (query) => {
@@ -14,7 +14,7 @@ export const getShippingMethod = async (query) => {
     const res = await axiosInstance.get(`/public/shippingmethod?${query}`);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 
@@ -24,7 +24,7 @@ export const postOrder = async (values) => {
     const res = await axiosInstance.post(`/orders`,values);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 
@@ -35,7 +35,7 @@ export const postCCAvenueOrder = async (values) => {
     const res = await axiosInstance.post(`/orders/cc-avenue`,values);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 

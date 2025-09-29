@@ -5,7 +5,7 @@ export const addToCartProduct = async (values) => {
     const res = await axiosInstance.post(`/cart`,values);
     return res.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getCartItems=async(id)=>{
@@ -15,7 +15,7 @@ export const getCartItems=async(id)=>{
     const res = await axiosInstance.get(`/cart/${id}`,);  
     return res.data
   }catch(error){
-    return error.response?.data?.message
+     return { success: false, error: error?.response?.data || error.message };
   }
 }
 export const putCartProduct = async (values) => {
@@ -24,7 +24,7 @@ export const putCartProduct = async (values) => {
     const res = await axiosInstance.put(`/cart/${values?.cartItem_id}`,{quantity:values.quantity});
     return res.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const deleteCartProduct = async (id) => {
@@ -33,7 +33,7 @@ export const deleteCartProduct = async (id) => {
     const res = await axiosInstance.delete(`/cart/${id}`,);
     return res.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const updateCartQuantity = async (item, newQty,userId) => {
@@ -46,6 +46,6 @@ export const updateCartQuantity = async (item, newQty,userId) => {
     const freshCart = await getCartItems(userId);
     return freshCart; 
   } catch (err) {
-    return err;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };

@@ -6,8 +6,7 @@ export const getBrandListing = async (perPage,pageNo,search) => {
     const res = await axiosInstance.get(`/public/brands?perPage=${perPage}&pageNo=${pageNo}&search=${search}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product detail:", error);
-    throw error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 
@@ -17,8 +16,7 @@ export const getBrandCatalogueListing = async (data) => {
     const res = await axiosInstance.post(`/public/brand-catalogue`,data);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product detail:", error);
-    throw error;
+      return { success: false, error: error?.response?.data || error.message };
   }
 };
 
@@ -48,7 +46,6 @@ export const getBrandProducts = async (
 
     return res.data;
   } catch (error) {
-    console.error("Error fetching brand products:", error);
     return { success: false, error: error?.response?.data || error.message };
   }
 };

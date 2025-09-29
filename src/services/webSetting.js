@@ -6,6 +6,6 @@ export const getWebSetting = async () => {
 
     return res.data?.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };

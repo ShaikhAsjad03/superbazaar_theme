@@ -5,7 +5,7 @@ export const getHomeBanners = async () => {
     const res = await axiosInstance.get(`/public/banner`);
     return res.data?.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getHomeContent = async () => {
@@ -14,7 +14,7 @@ export const getHomeContent = async () => {
     const res = await axiosInstance.get(`/public/home-data`);
     return res.data?.data || {};
   } catch (error) {
-    return error;
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getHomeProductlist = async (url, purchaseType) => {
@@ -23,7 +23,7 @@ export const getHomeProductlist = async (url, purchaseType) => {
     const res = await axiosInstance.get(`/public/home/collection/${url}?purchaseType=${purchaseType}`);
     return res.data?.data || {};
   } catch (error) {
-    return error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getTestimonal = async () => {
@@ -32,7 +32,7 @@ export const getTestimonal = async () => {
     const res = await axiosInstance.get(`/public/testimonials`);
     return res.data?.data || {};
   } catch (error) {
-    return {};
+     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getCategorySlider = async () => {
@@ -41,7 +41,7 @@ export const getCategorySlider = async () => {
     const res = await axiosInstance.get(`/public/category`);
     return res.data?.data || {};
   } catch (error) {
-    return {};
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getPopups = async () => {
@@ -50,7 +50,7 @@ export const getPopups = async () => {
     const res = await axiosInstance.get(`/public/popups`);
     return res.data?.data || {};
   } catch (error) {
-    return {}
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 

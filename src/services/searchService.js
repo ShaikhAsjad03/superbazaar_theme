@@ -6,7 +6,6 @@ export const getsearchData = async (url) => {
     const res = await axiosInstance.get(`/public/search?${url}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product detail:", error);
-    throw error;
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
