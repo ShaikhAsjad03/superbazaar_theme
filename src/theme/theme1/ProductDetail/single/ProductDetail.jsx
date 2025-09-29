@@ -271,8 +271,8 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
         isOpen={shareOpen}
         onClose={() => setShareOpen(false)}
         name={product.name}
-        image={ImageUrl(product?.image[0])}
         url={product.url}
+        CopyUrl={`retail/${category}/${product.url}`}
       />
 
       <InquiryForm

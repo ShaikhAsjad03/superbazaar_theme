@@ -228,8 +228,10 @@ const Catalogue = ({ CatalogueDetailData, stitching, category }) => {
             {shareOpen && (
                 <SharePopup
                     isOpen={shareOpen}
+                     name={CatalogueDetailData.name}
                     onClose={() => setShareOpen(false)}
-                    url={`https://superbazaar.in/`}
+                     url={CatalogueDetailData.url}
+                     CopyUrl={`catalogue/${category}/${CatalogueDetailData.url}`}
                 />
             )}
 
