@@ -272,7 +272,7 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
         onClose={() => setShareOpen(false)}
         name={product.name}
         image={ImageUrl(product?.image[0])}
-        url={`${process.env.NEXT_PUBLIC_API_URL}api/public/shareproduct/${product.id}`}
+        url={product.url}
       />
 
       <InquiryForm
