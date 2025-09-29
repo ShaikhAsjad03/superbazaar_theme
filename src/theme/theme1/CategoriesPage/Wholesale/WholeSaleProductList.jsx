@@ -5,12 +5,12 @@ import { SlidersHorizontal, LayoutList, Grip, GripVertical } from "lucide-react"
 import { getCategoryProducts, getWholeSaleProductslists } from "@/services/productService";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import CatalogueCard from "../../../../components/cards/CatalogueCard";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 const ProductCard = dynamic(() => import("@/components/cards/ProductCards"))
 const Pagination = dynamic(() => import("@/components/Pagination"))
 const WholeSaleProductList = ({ category }) => {
     const pathname = usePathname();
-
+    const router = useRouter();
 
     const [grid, setGrid] = useState(4);
     const [sort, setSort] = useState("");
@@ -52,6 +52,10 @@ const WholeSaleProductList = ({ category }) => {
     ];
 
 
+     const handlePurchaseChange = (type) => {
+    if (type === "wholesale") router.push(`/wholesale/${category}`);
+    else router.push(`/retail/${category}`);
+  };
     return (
         <div className="mx-auto px-4 mt-10  
   w-full 
@@ -60,6 +64,46 @@ const WholeSaleProductList = ({ category }) => {
   lg:max-w-[960px] 
   xl:max-w-[1240px] 
   2xl:max-w-[1320px]">
+
+     <div className="flex justify-center mb-6 ">
+          <div className="inline-flex border border-zinc-300 bg-white shadow-md rounded-full overflow-hidden">
+            <label
+              className={`bg-black text-white flex items-center gap-2 px-6 py-2 text-sm font-semibold cursor-pointer transition-all duration-300
+                `}
+            >
+              <input
+                type="radio"
+                name="purchaseType"
+                value="wholesale"
+                checked={true}
+                onChange={() => handlePurchaseChange("wholesale")}
+                className="hidden"
+              />
+              <span
+                className={`inline-block w-3 h-3 rounded-full border border-zinc-400 bg-white `}
+              ></span>
+              Wholesale
+            </label>
+
+            <label
+              className={`text-zinc-700 hover:bg-zinc-100 shadow flex items-center gap-2 px-6 py-2 text-sm font-semibold cursor-pointer transition-all duration-300
+                `}
+            >
+              <input
+                type="radio"
+                name="purchaseType"
+                value="retail"
+                checked={false}
+                onChange={() => handlePurchaseChange("retail")}
+                className="hidden"
+              />
+              <span
+                className={`inline-block w-3 h-3 rounded-full border border-zinc-400 bg-white `}
+              ></span>
+              Retail
+            </label>
+          </div>
+        </div>
             <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
                 <div className="hidden md:flex items-center gap-5">
                     {gridButtons.map((btn) => {

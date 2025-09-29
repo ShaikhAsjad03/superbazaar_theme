@@ -3,55 +3,68 @@ import Banner from "./components/Banner";
 import { getHomeBanners, getHomeContent, getHomeProductlist } from "@/services/homeService";
 import { getWebSetting } from "@/services/webSetting";
 import Popups from "@/components/Popups";
-import NormalSliderCard from "../components/CardsSlider/NormalSlider";
-const Topcategories = dynamic(() => import("./components/TopCategores"))
-const Products = dynamic(() => import("../components/Products/Products"))
-const ThreeFourBanner = dynamic(() => import("./components/ThreeFourBanner"))
-const CardsSlider3D = dynamic(() => import("../components/CardsSlider/CardsSlider3D"))
-const FullSlider = dynamic(() => import("./components/FulSlider"))
-const TestimonialSlider = dynamic(() => import("./components/Testimonal"))
-const TwoBanner = dynamic(() => import("./components/TwoBanner"))
+import Slider from "../components/CardsSlider/slider";
+
+const Topcategories = dynamic(() => import("./components/TopCategores"));
+const Products = dynamic(() => import("../components/Products/Products"));
+const ThreeFourBanner = dynamic(() => import("./components/ThreeFourBanner"));
+const CardsSlider3D = dynamic(() => import("../components/CardsSlider/CardsSlider3D"));
+const FullSlider = dynamic(() => import("./components/FulSlider"));
+const TestimonialSlider = dynamic(() => import("./components/Testimonal"));
+const TwoBanner = dynamic(() => import("./components/TwoBanner"));
+const NormalSliderCard = dynamic(() => import("../components/CardsSlider/NormalSlider"));
+
 export default async function Home() {
-  const
-    [bannerdata,
-      HomeContent,
-      webSetting,
-    ] = await Promise.all(
-      [getHomeBanners(), getHomeContent(), getWebSetting(),]);
-  const homeContentArray = Array.isArray(HomeContent) ? HomeContent : [];
-  const productBlocks = homeContentArray.filter(
-    (item) => item?.type === "product" && item.categoryId
-  );
-  const productTabsData = await Promise.all(
-    productBlocks.map(async (block) => {
-      const products = await getHomeProductlist(block.category?.url, webSetting?.purchaseType);
-      return {
-        title: block.title,
-        url: block.category?.url,
-        products,
-      };
+  const [bannerData, homeContent, webSetting] = await Promise.all([
+    getHomeBanners(),
+    getHomeContent(),
+    getWebSetting(),
+  ]);
+
+  const homeContentArray = Array.isArray(homeContent) ? homeContent : [];
+
+  const contentWithProducts = await Promise.all(
+    homeContentArray.map(async (item) => {
+      if (item.type === "product" && item.category?.url) {
+        const productsData = await getHomeProductlist(item.category.url, webSetting?.purchaseType);
+        return { ...item, products: productsData };
+      }
+      return item;
     })
   );
 
-
-  const componentMap = {
-    "full slider": (item) => <FullSlider key={item.id} slides={item.data} />,
-    "slider 3d": (item) => <CardsSlider3D key={item.id} slides={item.data} />,
-    "cards slider": (item) => <NormalSliderCard key={item.id} slides={item.data} />,
-    "two banner": (item) => <TwoBanner key={item.id} data={item.data} bannergrid={2} htmlContent={item.htmlContent} fullScreen={item.fullScreen}/>,
-    "three banner": (item) => <ThreeFourBanner key={item.id} data={item.data} bannergrid={3} htmlContent={item.htmlContent} fullScreen={item.fullScreen}/>,
-    "four banner": (item) => <ThreeFourBanner key={item.id} data={item.data} bannergrid={4} htmlContent={item.htmlContent} fullScreen={item.fullScreen}/>,
+  const renderComponent = (item) => {
+    switch (item.type) {
+      case "full slider":
+        return <FullSlider key={item.id} slides={item.data} />;
+      case "slider 3d":
+        return <CardsSlider3D key={item.id} slides={item.data} />;
+      case "cards slider":
+        return <Slider key={item.id} slides={item.data} title={item.title}/>;
+      case "two banner":
+        return <TwoBanner key={item.id} data={item.data} bannergrid={2} htmlContent={item.htmlContent} fullScreen={item.fullScreen} />;
+      case "three banner":
+        return <ThreeFourBanner key={item.id} data={item.data} bannergrid={3} htmlContent={item.htmlContent} fullScreen={item.fullScreen} />;
+      case "four banner":
+        return <ThreeFourBanner key={item.id} data={item.data} bannergrid={4} htmlContent={item.htmlContent} fullScreen={item.fullScreen} />;
+      case "product":
+        return <Products
+          key={item.id}
+          singleProducts={item.products?.products}
+         fullSetProducts={item.products?.catalogue}
+          purchaseType={webSetting?.purchaseType}
+          url={item?.products?.url}
+        />;
+      default:
+        return null;
+    }
   };
+
   return (
     <>
-      <Banner bannerdata={bannerdata} />
+      <Banner bannerdata={bannerData} />
       <Topcategories purchaseType={webSetting?.purchaseType} />
-      {productTabsData.length > 0 && <Products tabsData={productTabsData} purchaseType={webSetting?.purchaseType} />}
-      {homeContentArray.map((item) => {
-        const renderFn = componentMap[item.type];
-
-        return renderFn ? renderFn(item) : null;
-      })}
+      {contentWithProducts.map((item) => renderComponent(item))}
       <TestimonialSlider />
       <Popups />
     </>

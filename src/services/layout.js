@@ -27,15 +27,9 @@ export const getTheme = async () => {
   try {
     const axiosInstance = await createServerAxios();
     const res = await axiosInstance.get(`/public/theme`);
-
     return res.data?.data || {};
   } catch (error) {
-    console.log(error)
-    const data = {
-      name: "", config: {}
-      // name: "theme2", config: {}
-    }
+    const data = {name: "", config: {}}
     return data;
-
   }
 };

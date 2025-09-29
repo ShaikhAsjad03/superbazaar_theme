@@ -228,64 +228,6 @@ const Filtertheme1 = ({ open, setOpen, filterData, onApply, setSelectedAttribute
   </>
 )}
 
-          {/* {filterData?.attributes?.map((attr) => (
-            <div
-              key={attr.attribute.key}
-              className="p-4 border-b border-gray-200"
-            >
-              <div
-                className="flex justify-between items-center cursor-pointer"
-                onClick={() => toggleSection(attr.attribute.key)}
-              >
-                <h3 className="font-semibold">{attr.attribute.name}</h3>
-                {openSections[attr.attribute.key] ? <Minus /> : <Plus />}
-              </div>
-              {openSections[attr.attribute.key] && (
-                <div
-                  className={
-                    attr.attribute.key.toLowerCase() === "color"
-                      ? "mt-3 grid grid-cols-7 gap-2"
-                      : "mt-3 space-y-3"
-                  }
-                >
-                  {attr.value.map((val) => {
-                   const isSelected = !!selectedAttributes[attr.attribute.key]?.some(
-  (item) => item.value === val.value
-);
-
-                    return (
-                      <label
-                        key={val.value}
-                        className={`cursor-pointer flex items-center ${attr.attribute.key.toLowerCase() === "color"
-                          ? "justify-center"
-                          : "space-x-2"
-                          }`}
-                      >
-                     <input
-  type="checkbox"
-  className={`accent-black ${attr.attribute.key.toLowerCase() === "color" ? "hidden" : ""}`}
-  checked={!!selectedAttributes[attr.attribute.key]?.some(item => item.value === val.value)}
-  onChange={() => handleAttributeChange(attr.attribute.key, val.value, val.name)}
-/>
-
-
-                        {attr.attribute.key.toLowerCase() === "color" ? (
-                          <span
-                            className={`w-7 h-7 rounded border ${isSelected ? "ring-2 ring-blue-500" : "border-gray-300"
-                              }`}
-                            style={{ backgroundColor: val.colour }}
-                          />
-                        ) : (
-                          <span>{val.name}</span>
-                        )}
-                      </label>
-                    );
-                  })}
-                </div>
-              )}
-
-            </div>
-          ))} */}
           {filterData?.brands && (
             <div className="p-4 border-b border-gray-200">
               <div

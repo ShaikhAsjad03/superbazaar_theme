@@ -8,7 +8,10 @@ import SliderNavigation from "@/theme/theme1/components/CardsSlider/SliderNaviga
 import Link from "next/link";
 import CatalogCard from "../../ProductDetail/wholesale/component/CatalogCard";
 import ProductCard from "../../ProductComponent/ProductCard";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import ProductViewTabs from "../../components/common/ProductViewTabs";
+import { useRouter } from "next/navigation";
+import { MoveRight, Package, Shirt } from "lucide-react";
 
 const ProductSkeleton = () => (
     <div className="h-60 w-40 bg-gray-200 animate-pulse rounded" />
@@ -16,6 +19,9 @@ const ProductSkeleton = () => (
 
 const TrendingLehengas = ({ tabsData, webSetting, isLoading }) => {
     const purchaseType = webSetting?.purchaseType || "retail";
+    const [activeTab, setActiveTab] = useState("single");
+    const router = useRouter();
+
     const memoizedTabsData = useMemo(() => {
         return Array.isArray(tabsData)
             ? tabsData.map(block => ({
@@ -26,6 +32,16 @@ const TrendingLehengas = ({ tabsData, webSetting, isLoading }) => {
             }))
             : [];
     }, [tabsData]);
+
+    const handleFullSetClick = (category) => {
+        setActiveTab("full");
+        router.push(`/wholesale/${category}`);
+    };
+
+    const handleSingleClick = (category) => {
+        setActiveTab("single");
+        router.push(`/retail/${category}`);
+    };
 
     return (
         <div className="container mx-auto px-4 mt-7">
@@ -44,7 +60,7 @@ const TrendingLehengas = ({ tabsData, webSetting, isLoading }) => {
                                 {block.title}
                             </p>
 
-                            <Link
+                            {/* <Link
                                 href={
                                     webSetting.purchaseType === "retail"
                                         ? `/retail/${block.url}`
@@ -53,7 +69,43 @@ const TrendingLehengas = ({ tabsData, webSetting, isLoading }) => {
                                 className="text-sm md:text-base font-bold hover:text-red-400 transition"
                             >
                                 View All →
-                            </Link>
+                            </Link> */}
+
+                            <div className="flex gap-4 mb-3">
+                                <Link
+                                    href={`/wholesale/${block.url}`}
+                                    className="flex items-center gap-1 text-red-600 underline decoration-red-600 hover:decoration-red-600"
+                                >
+                                    FULL SET
+                                </Link>
+
+                                <Link
+                                    href={`/retail/${block.url}`}
+                                    className="relative flex items-center gap-1 text-gray-600 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-700 hover:after:w-full"
+                                >
+                                    SINGLE
+                                </Link>
+
+                                <Link
+                                    href={`/retail/${block.url}`}
+                                    className="relative flex items-center gap-1 text-gray-600 
+             after:content-[''] after:absolute after:left-0 after:bottom-0 
+             after:h-[2px] after:w-full after:bg-gray-300 
+             after:transition-colors after:duration-700 
+             hover:after:bg-black"
+                                >
+                                    SINGLE
+                                </Link>
+
+
+                            </div>
+
+                            {/* <div className="flex gap-2 mb-3">
+                                <Link href={` /wholesale/${block.url}`} className="flex text-red-600 underline ">
+                                    <Package size={18} />    FULL SET</Link>
+                                <Link href={` /retail/${block.url}`} class="flex text-black-500 hover:underline">      <Shirt size={18} />SINGLE</Link>
+                              
+                            </div> */}
                         </div>
 
                         <div className="relative mx-auto px-4 sm:px-6 md:px-0 w-full">

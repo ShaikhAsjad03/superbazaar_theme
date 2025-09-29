@@ -51,7 +51,7 @@ const PaymentMethod = ({ onPaymentChange }) => {
                 <img
                   src={ImageUrl(method.image)}
                   alt={method.name}
-                  className="w-10 h-10 object-contain"
+                  className="w-20 h-15 object-cover"
                 />
               ) : (
                 <div className="w-10 h-10 flex items-center justify-center rounded bg-gray-100 text-gray-600 text-sm font-bold uppercase">

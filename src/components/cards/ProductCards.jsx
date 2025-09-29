@@ -7,10 +7,11 @@ import PriceConverter from "@/components/PriceConverter";
 import WishlistButton from "./attribute/WishlistButton";
 
 const ProductCard = ({ data, redirectUrl }) => {
+    
     const pathname = usePathname();
     return (
         <div className="group relative w-full bg-white rounded-t-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 p-0 sm:p-2">
-            <div className="relative w-full aspect-[4/6] sm:aspect-[1/1] md:aspect-[3/4]">
+            <div className="relative w-full aspect-[3/6] sm:aspect-[1/1] md:aspect-[2/3]">
                 <Link
                     href={redirectUrl ? `/retail/${redirectUrl}/${data?.url}` : `${pathname}/${data?.url || "/"}`}>
                     <Image
@@ -62,24 +63,6 @@ const ProductCard = ({ data, redirectUrl }) => {
                             </span>
                         )}
                 </div>
-
-                {/* <div className="flex items-start sm:items-center gap-1 sm:gap-2 mt-1">
-                    <span className="text-red-600 font-normal text-base sm:text-md">
-                        <PriceConverter price={data?.offer_price} />
-                    </span>
-
-                    {data?.retail_discount != 0 && (
-                        <span className="text-gray-400 line-through text-sm sm:text-md font-medium">
-                            <PriceConverter price={data?.retail_price} />
-                        </span>
-                    )}
-
-                    {data?.retail_discount != 0 && data?.retail_price && data?.offer_price && (
-                        <span className="hidden lg:block bg-red-100 text-red-700 font-normal text-xs sm:text-md px-2 py-0.5 rounded-md">
-                            {data?.retail_discount}% OFF
-                        </span>
-                    )}
-                </div> */}
             </div>
         </div>
     )

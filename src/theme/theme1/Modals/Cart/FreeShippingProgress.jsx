@@ -30,7 +30,7 @@ const FreeShippingProgress = ({ currentAmount, shippingThreshold, isModalOpen })
           style={{ left: `${truckProgress}%`, transition: "left 2s ease-in-out" }}
         >
           <div className="w-9 h-9 border-2 border-green-600 bg-white rounded-full flex items-center justify-center p-1">
-            <Truck className="text-black" size={16} />
+            <Truck className="text-black" size={17} />
           </div>
         </div>
       </div>

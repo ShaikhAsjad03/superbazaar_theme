@@ -50,9 +50,8 @@ const CartItems = ({ CartData }) => {
   return (
     <div className="mx-auto mt-7 w-full sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px] px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Cart Items */}
         <div className="flex-1 bg-white shadow rounded-2xl p-6">
-          <FreeShippingProgress currentAmount={75} shippingThreshold={100} isModalOpen={true} />
+          <FreeShippingProgress currentAmount={100} shippingThreshold={100} isModalOpen={true} />
           <h2 className="text-xl font-semibold mb-4">Cart Items</h2>
 
           {CartData?.data?.length === 0 ? (

@@ -47,7 +47,7 @@ const ProductImageGallery = ({ images, thumbs }) => {
             <Image
               src={ImageUrl(thumb)}
               alt={`Thumb ${index + 1}`}
-              width={80}
+              width={100}
               height={100}
               className="object-cover"
             />
@@ -62,8 +62,8 @@ const ProductImageGallery = ({ images, thumbs }) => {
         <Image
           src={`https://cdn.superbazaar.in/${selectedImage}`}
           alt="Product"
-          width={600}
-          height={500}
+          width={700}
+          height={600}
           className={`rounded-md  max-h-[700px] transition-transform duration-100 ${isZoomed ? "scale-150" : ""
             }`}
           style={zoomStyle}

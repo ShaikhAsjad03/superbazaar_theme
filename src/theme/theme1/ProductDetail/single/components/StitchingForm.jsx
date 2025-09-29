@@ -147,21 +147,20 @@ export default function StitchingForm({ stitchingData, onChange }) {
                             option.stitchingValues.length > 0 ? (
                                 <div key={option.id} className="space-y-4 mt-4 pt-4">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                                        {option.stitchingValues.map((field) => (
+                                        {option.stitchingValues.map((field) => {
+const [min, max] = field.range?.split("-").map(Number) || [undefined, undefined];
+                                            return(
                                             <div key={field.id} className="flex flex-col w-full">
                                                 <label className="mb-1 font-medium">
                                                     {field.name}{" "}
-                                                    {field.range && (
-                                                        <span className="text-sm text-gray-500">
-                                                            ({field.range})
-                                                        </span>
-                                                    )}
                                                 </label>
                                                 {field.type === "TextField" ? (
                                                     <input
                                                         type="number"
                                                         placeholder={field.range}
                                                         value={formData[option.id]?.[field.id] || ""}
+                                                        min={min}
+                                                        max={max}
                                                         onChange={(e) =>
                                                             handleInputChange(
                                                                 option.id,
@@ -203,7 +202,8 @@ export default function StitchingForm({ stitchingData, onChange }) {
                                                     </p>
                                                 )}
                                             </div>
-                                        ))}
+                                            )
+})}
                                     </div>
                                 </div>
                             ) : null

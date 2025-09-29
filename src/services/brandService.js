@@ -21,3 +21,35 @@ export const getBrandCatalogueListing = async (data) => {
     throw error;
   }
 };
+
+export const getBrandProducts = async (
+  brand,
+  pageNo = 1,
+  perPage = 20,
+  sortOption = "",
+  finalFilters = {},
+  isServer = false
+) => {
+  try {
+    const axiosInstance = isServer ? await createServerAxios() : createClientAxios();
+
+    const res = await axiosInstance.post(
+      `/public/brand-product`, 
+      {
+        url: brand,
+        perPage,
+        pageNo,
+        sortOption,
+      },
+      {
+        params: finalFilters, 
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching brand products:", error);
+    return { success: false, error: error?.response?.data || error.message };
+  }
+};
+

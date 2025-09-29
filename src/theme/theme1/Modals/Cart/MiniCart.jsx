@@ -79,7 +79,7 @@ const MiniCart = () => {
         </div>
         <div className="m-5">
           <FreeShippingProgress
-            currentAmount={75}
+            currentAmount={100}
             shippingThreshold={100}
             isModalOpen={isCartOpen}
           />

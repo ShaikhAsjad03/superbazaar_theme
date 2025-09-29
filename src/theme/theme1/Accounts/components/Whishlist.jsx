@@ -32,7 +32,7 @@ const WishlistTheme1 = () => {
       {activeTab === "products" && (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.length > 0 ? (
-            products.map((item, index) => <ProductCard key={index} data={item} />)
+            products.map((item, index) => <ProductCard key={index} data={item} redirectUrl={item?.categoryUrl}/>)
           ) : (
             <p className="text-gray-600">No products in your wishlist.</p>
           )}

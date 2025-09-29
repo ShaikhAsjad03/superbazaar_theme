@@ -10,7 +10,6 @@ import QuickViewButton from "./attribute/QuickViewButton"
 
 const CatalogueCard = ({ data, redirectUrl }) => {
   const pathname = usePathname();
-
   return (
     <div className="group relative w-full bg-white rounded-lg overflow-hidden transition-all duration-500 hover:-translate-y-1">
       <div className="relative w-full aspect-[4/6] overflow-hidden rounded-t-lg">
@@ -28,13 +27,13 @@ const CatalogueCard = ({ data, redirectUrl }) => {
         {data?.label && (
           <Label text={data.label} danger={data?.label === "Hot"} />
         )}
+
         <div className="absolute top-5 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
           <WishlistButton catalogueId={data?.id} type="catalogue" variant="card" />
-          <QuickViewButton />
         </div>
 
         {data?.no_of_product && (
-          <div className="bg-gray-800 text-white absolute bottom-1 text-xs w-10 h-10 flex md:hidden items-center justify-center rounded-full">
+          <div className="absolute bottom-2 right-2 bg-gray-800 text-white text-[10px] sm:text-xs w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full shadow-md">
             {`${data.no_of_product}PCS`}
           </div>
         )}
@@ -57,11 +56,7 @@ const CatalogueCard = ({ data, redirectUrl }) => {
             <span className="text-zinc-900 text-sm">Avg Price</span>
           </div>
 
-          {data?.no_of_product && (
-            <div className="bg-gray-800 text-white text-xs w-10 h-10 hidden md:flex items-center justify-center rounded-full mx-auto sm:mx-0">
-              {`${data.no_of_product}PCS`}
-            </div>
-          )}
+
           <div className="flex flex-col items-center sm:items-end">
             <span className="text-zinc-900">
               <PriceConverter price={data?.offer_price} />

@@ -19,6 +19,7 @@ export const getThemeModules = (theme = "theme1") => {
         WholeSaleProductList: load(() => import("./theme1/CategoriesPage/Wholesale/WholeSaleProductList")),
         BrandList: load(() => import("./theme1/brands/brandLists")),
         BrandCatalogueList: load(() => import("./theme1/brands/brandCatalogueList")),
+        BrandRetailList: load(() => import("./theme1/brands/brandRetailProductList")),
         Catalogue: load(() => import("./theme1/ProductDetail/catalogue/catalogue")),
         WholeSalePage: load(() => import("./theme1/wholesalePage/wholesalepage")),
         OrderDetail: load(() => import("./theme1/Accounts/components/orderDetails")),
