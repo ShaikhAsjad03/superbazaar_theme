@@ -1,3 +1,4 @@
+import { getWebSetting } from "@/services/webSetting"
 import Footer from "./components/common/Footer"
 import Navbar from "./components/common/Header/Navbar"
 import ModalManager from "./Modals/Auth/ModalManager"
@@ -7,14 +8,15 @@ const roboto = Roboto({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700"],
 });
-const LayoutTheme1 = ({ children, theme }) => {
+const LayoutTheme1 = async ({ children, theme }) => {
+    const webSetting = await getWebSetting();
     return (
         <div className={roboto.className}>
             <Navbar />
             <main>{children}</main>
             <Footer />
             <ModalManager />
-            <MiniCart />
+            <MiniCart webSetting={webSetting} />
 
         </div>
     )

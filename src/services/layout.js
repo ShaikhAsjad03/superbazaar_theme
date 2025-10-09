@@ -4,7 +4,7 @@ import { createServerAxios } from "./apiClient";
 export const getMenu = async () => {
   try {
     const axiosInstance = await createServerAxios();
-    const res = await axiosInstance.get(`/public/menu`);
+    const res = await axiosInstance.get(`/public/megamenu`);
     return res.data?.data || {};
   } catch (error) {
     return { success: false, error: error?.response?.data || error.message };
@@ -23,13 +23,29 @@ export const getCurrency = async () => {
 };
 
 
+// export const getTheme = async () => {
+//   try {
+//     const axiosInstance = await createServerAxios();
+//     const res = await axiosInstance.get(`/public/theme`);
+//     return res.data?.data || {};
+//   } catch (error) {
+//     const data = { name: "", config: {} }
+//     return data;
+//   }
+// };
+
+
 export const getTheme = async () => {
   try {
     const axiosInstance = await createServerAxios();
     const res = await axiosInstance.get(`/public/theme`);
+
     return res.data?.data || {};
   } catch (error) {
-    const data = {name: "", config: {}}
+    const data = {
+      name: "", config: {}
+      // name: "theme2", config: {}
+    }
     return data;
   }
-};
+}

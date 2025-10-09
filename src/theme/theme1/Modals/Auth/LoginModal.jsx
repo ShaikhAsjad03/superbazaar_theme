@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useModal } from "@/hooks/useModal";
-import { ArrowUpRight, Eye, EyeOff } from "lucide-react";
+import { ArrowUpRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useFormik } from "formik";
 import { loginSchema } from "@/schema/schema";
 import { signIn, useSession } from "next-auth/react";
@@ -13,28 +13,39 @@ export default function LoginModal() {
   const { modal, close, open } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const initialValues = { email: "", password: "" };
 
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values) => {
-      setLoginError("");
-      const res = await signIn("credentials", {
-        redirect: false,
-        email: values.email,
-        password: values.password,
-      });
+      try {
+        setLoginError("");
+        setLoading(true);
+        const res = await signIn("credentials", {
+          redirect: false,
+          email: values.email,
+          password: values.password,
+        });
 
-      if (res?.error) {
-        setLoginError("Invalid email or password");
-      } else {
-        const session = await fetch("/api/auth/session").then(r => r.json());
-        if (session?.accessToken) {
-          localStorage.setItem("token", session.accessToken);
+        if (res?.error) {
+          setLoginError("Invalid email or password");
+        } else {
+          const session = await fetch("/api/auth/session").then(r => r.json());
+          if (session?.accessToken) {
+            localStorage.setItem("token", session.accessToken);
+          }
+          setLoading(false);
+          close("login")
         }
-        close("login")
+      } catch (err) {
+        setLoginError(err?.respose?.data?.message || 'Something went wrong');
+      } finally {
+        setLoading(false);
       }
+
     },
   });
 
@@ -59,8 +70,7 @@ export default function LoginModal() {
       <div className="relative bg-white rounded-md shadow-lg w-full max-w-lg p-8 z-10">
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-black"
-          onClick={() => close("login")}
-        >
+          onClick={() => close("login")}>
           ✕
         </button>
 
@@ -145,10 +155,15 @@ export default function LoginModal() {
           <div className="mt-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <button
               type="submit"
-              className="w-full sm:w-auto flex-1 bg-zinc-900 text-white py-2 rounded-sm hover:bg-black transition-colors duration-200"
-            >
-              Login
+              className={`w-full sm:w-auto flex-1 bg-zinc-900 text-white py-2 rounded-sm hover:bg-black transition-colors duration-200 flex items-center justify-center gap-2`}
+              disabled={loading} >
+              {loading ? (
+                <Loader2 className="animate-spin h-5 w-5 text-white" />
+              ) : (
+                "Login"
+              )}
             </button>
+
 
             <p className="text-sm text-gray-600 text-center sm:text-left cursor-pointer">
               <button

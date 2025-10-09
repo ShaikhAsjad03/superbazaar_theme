@@ -5,6 +5,9 @@ import { Columns2, Columns3, Columns4 } from "lucide-react";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import { getBrandCatalogueListing } from "@/services/brandService";
 import CatalogCard from "../ProductDetail/wholesale/component/CatalogCard";
+import ProductViewTabs from "../components/common/ProductViewTabs";
+import ProductListToolbar from "../components/common/ProductListToolbar";
+import FilterSidebar from "../CategoriesPage/FilterSidebar";
 const Pagination = dynamic(() => import("@/components/Pagination"))
 
 const BrandCatalogueList = ({ brands, }) => {
@@ -14,7 +17,11 @@ const BrandCatalogueList = ({ brands, }) => {
     const [products, setProducts] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(true);
-
+  const [activeTab, setActiveTab] = useState("single")
+  const [open, setOpen] = useState(false);
+    const [filterData, setFilterData] = useState([]);
+    const [selectedAttributes, setSelectedAttributes] = useState({});
+    //   const productSectionRef = useRef(null);
     const fetchProducts = async () => {
         setLoading(true);
         try {
@@ -55,8 +62,38 @@ const BrandCatalogueList = ({ brands, }) => {
     ];
 
     return (
+        <>
+         <div className="container mx-auto px-4 mt-7">
+                <ProductViewTabs
+                    category={brands}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    brand="brand"
+        />
+         <ProductListToolbar
+                    title={brands}
+                    products={products}
+                    totalCount={totalCount}
+                    sort={sort}
+                    setSort={setSort}
+                    grid={grid}
+                    setGrid={setGrid}
+                    open={open}
+                    setOpen={setOpen}
+                />
+                {/* <FilterSidebar
+                    open={open}
+                    setOpen={setOpen}
+                    filterData={filterData}
+                    onApply={handleApplyFilters}
+                    setSelectedAttributes={setSelectedAttributes}
+                    selectedAttributes={selectedAttributes}
+                    mobile={true}
+                /> */}
+</div>
+      
         <div className="mx-auto px-4 mt-7 w-full sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1240px] 2xl:max-w-[1320px]">
-            <div className="flex flex-wrap justify-end items-center mb-6 gap-4">
+            {/* <div className="flex flex-wrap justify-end items-center mb-6 gap-4">
                 <div className="flex items-center gap-3">
                     <div className="flex gap-1">
                         {gridButtons.map((btn) => {
@@ -84,7 +121,7 @@ const BrandCatalogueList = ({ brands, }) => {
                         ))}
                     </select>
                 </div>
-            </div>
+            </div> */}
             <div
                 className={`grid gap-4 
             ${grid === 2 ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-2" : ""} 
@@ -115,7 +152,8 @@ const BrandCatalogueList = ({ brands, }) => {
                     onPageChange={(p) => setPage(p)}
                 />
             </div>
-        </div>
+            </div>
+              </>
     );
 };
 

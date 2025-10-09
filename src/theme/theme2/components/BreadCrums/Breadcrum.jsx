@@ -3,6 +3,7 @@ import React from 'react'
 
 
 const Breadcrum = ({ name }) => {
+    
     return (
         <div>
             <div className="text-uppercase mb-4 bg-red-50 p-3 text-xs">

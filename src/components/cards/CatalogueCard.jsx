@@ -7,6 +7,7 @@ import PriceConverter from "@/components/PriceConverter"
 import Label from "@/components/Label"
 import WishlistButton from "./attribute/WishlistButton"
 import QuickViewButton from "./attribute/QuickViewButton"
+import CataloguePriceVisibility from "../CataloguePriceVisibility"
 
 const CatalogueCard = ({ data, redirectUrl }) => {
   const pathname = usePathname();
@@ -39,36 +40,19 @@ const CatalogueCard = ({ data, redirectUrl }) => {
         )}
       </div>
 
-      <div className="p-2 relative">
+      <div className="p-1 sm:p-2 relative">
         <Link href={`${pathname}/${data?.url || "/"}`}>
           <h3 className="text-sm text-gray-800 hover:text-gray-900 line-clamp-1 overflow-hidden">
             {data?.name || ""}
           </h3>
         </Link>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mt-4">
-          <div className="flex flex-col items-center sm:items-start">
-            {data?.average_price && (
-              <p className="text-sm sm:text-base text-zinc-900 mt-1">
-                <PriceConverter price={data?.average_price} />
-              </p>
-            )}
-            <span className="text-zinc-900 text-sm">Avg Price</span>
-          </div>
-
-
-          <div className="flex flex-col items-center sm:items-end">
-            <span className="text-zinc-900">
-              <PriceConverter price={data?.offer_price} />
-            </span>
-            {data?.price && data?.offer_price < data?.price && (
-              <span className="text-zinc-900 line-through text-sm">
-                <PriceConverter price={data?.price} />
-              </span>
-            )}
-            <span className="text-zinc-900 text-sm">Full Price</span>
-          </div>
-        </div>
+<CataloguePriceVisibility
+  avgPrice={data?.average_price}
+  offerPrice={data?.offer_price}
+  fullPrice={data?.price}
+  discount={data?.retail_discount}
+/>
       </div>
     </div>
   )

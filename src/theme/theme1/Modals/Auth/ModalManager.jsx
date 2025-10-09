@@ -5,7 +5,7 @@ import SignupModal from "./SignupModal";
 import ForgetPasswordModal from "./ForgetPasswordModal";
 import OTPModal from "./OTPModal";
 import ConfirmPasswordModal from "./ConfirmPasswordModal";
-
+import SignupWholesaleModal from "./SignupWholesale";
 export default function ModalManager() {
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -29,6 +29,7 @@ export default function ModalManager() {
       <ForgetPasswordModal />
       <OTPModal />
       <ConfirmPasswordModal />
+      <SignupWholesaleModal/>
     </>
   );
 }

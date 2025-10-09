@@ -47,12 +47,24 @@ export default function Signup() {
                         email: values.email,
                         password: values.password,
                     });
-
                     if (loginRes?.error) {
-                        setErrors("Login failed after signup");
+                        setErrors(
+                            errors?.response?.data?.message || "Something went wrong"
+                        );
                     } else {
+                        const session = await fetch("/api/auth/session").then((r) =>
+                            r.json()
+                        );
+                        if (session?.accessToken) {
+                            localStorage.setItem("token", session.accessToken);
+                        }
                         router.push("/");
                     }
+                    // if (loginRes?.error) {
+                    //     setErrors("Login failed after signup");
+                    // } else {
+                    //     router.push("/");
+                    // }
                 }
             } catch (error) {
                 setErrors(error?.response?.data?.message || "Something went wrong");

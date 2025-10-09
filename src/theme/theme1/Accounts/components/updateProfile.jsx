@@ -43,8 +43,8 @@ const UpdateProfile = ({ open, onClose, user, onUpdate, userId }) => {
     }, [user])
 
     return (
-      <div
-  className={`absolute right-0 top-0 h-full w-full md:w-[600px] rounded-l-2xl bg-white shadow-xl transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}
+     <div
+  className={`fixed top-0 right-0 z-50 h-[100%] md:w-[600px] w-full rounded-l-2xl bg-white shadow-xl transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}
 >
   <div className="flex items-center justify-between px-4 py-3 border-b">
     <h2 className="text-lg font-semibold">Update Profile</h2>
@@ -58,7 +58,6 @@ const UpdateProfile = ({ open, onClose, user, onUpdate, userId }) => {
       onSubmit={handleSubmit}
       className="space-y-6 w-full max-w-md p-4 md:p-6 rounded-xl mt-4"
     >
-      {/* Full Name */}
       <div className="relative">
         <input
           type="text"
@@ -86,7 +85,6 @@ const UpdateProfile = ({ open, onClose, user, onUpdate, userId }) => {
         {touched.name && errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
       </div>
 
-      {/* Email */}
       <div className="relative">
         <input
           type="email"
@@ -114,7 +112,6 @@ const UpdateProfile = ({ open, onClose, user, onUpdate, userId }) => {
         {touched.email && errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
       </div>
 
-      {/* Mobile */}
       <div className="relative">
         <input
           type="number"

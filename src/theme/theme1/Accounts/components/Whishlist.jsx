@@ -32,7 +32,7 @@ const WishlistTheme1 = () => {
       {activeTab === "products" && (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.length > 0 ? (
-            products.map((item, index) => <ProductCard key={index} data={item} redirectUrl={item?.categoryUrl}/>)
+            products.map((item, index) => <ProductCard key={index} data={item} redirectUrl={item?.categoryUrl} />)
           ) : (
             <p className="text-gray-600">No products in your wishlist.</p>
           )}
@@ -41,8 +41,13 @@ const WishlistTheme1 = () => {
 
       {activeTab === "catalogues" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
           {catalogues.length > 0 ? (
-            catalogues.map((item, index) => (<CatalogueCard data={item} key={index} />))
+            catalogues.map((item, index) => {
+              return (
+                <CatalogueCard data={item} key={index} redirectUrl={`catalogue/${item?.categoryUrl}`} />
+              )
+            })
           ) : (
             <p className="text-gray-600">No catalogues in your wishlist.</p>
           )}

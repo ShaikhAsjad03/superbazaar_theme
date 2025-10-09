@@ -11,6 +11,7 @@ const CatalogueDetailPage = async ({ params }) => {
         getCataloguedetail(url),
         getCatalogueStitching(url),
     ]);
+
     return (
         <Catalogue
             category={category}

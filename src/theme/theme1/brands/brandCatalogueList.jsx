@@ -155,8 +155,7 @@ const router = useRouter();
                 ) : products?.length > 0 ? (
                     products.map((item, index) => (
                         <div key={index}>
-                            {console.log(item)}
-                            <CatalogueCard data={item} grid={grid} redirectUrl={`catalogue/${item?.CatalogueCategory?.[0]?.category?.url}`} />
+                            <CatalogueCard data={item} grid={grid} redirectUrl={`catalogue/${item?.CatalogueCategory?.[0]?.category?.menus?.[0]?.url || null}`} />
                         </div>
                     ))
                 ) : (

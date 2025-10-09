@@ -21,10 +21,12 @@ const Testimonial = () => {
     useEffect(() => {
         fetchdata()
     }, [])
+
     return (
-        <section className="testimonial-wrapper py-8 bg-gray-50 mt-3 mb-5">
+
+        data.length > 0 && <section className="testimonial-wrapper py-8 bg-gray-50 mt-3 mb-5">
             <div className="container mx-auto px-4">
-                <p className="text-[#222222] text-[18px] font-semibold text-center uppercase mb-6">
+                <p className="text-zinc-700 text-[18px] font-semibold text-center uppercase mb-6">
                     Testimonials
                 </p>
                 <Swiper
@@ -57,6 +59,7 @@ const Testimonial = () => {
                                 <div className="flex gap-1 mb-3">
                                     {Array.from({ length: 5 }).map((_, i) => (
                                         <Star
+                                            size={14}
                                             key={i}
                                             className="text-amber-400"
                                             fill={i < testimonial.rating ? "#FBBF24" : "none"}

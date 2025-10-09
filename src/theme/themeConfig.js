@@ -6,7 +6,7 @@ export const getThemeModules = (theme = "theme1") => {
     case "theme1":
       return {
         layout: load(() => import("./theme1/layout")),
-        CategoryBanner: load(() => import("./theme1/CategoriesPage/CategoryBannertheme1")),
+        PageBanner: load(() => import("./theme1/CategoriesPage/pageBanner")),
         Products: load(() => import("./theme1/CategoriesPage/Retail/Productstheme1")),
         Home: load(() => import("./theme1/Home/Home")),
         AccountDetail: load(() => import("./theme1/Accounts/components/AccountDetailtheme1")),
@@ -32,7 +32,7 @@ export const getThemeModules = (theme = "theme1") => {
     case "theme2":
       return {
         layout: load(() => import("./theme2/layout")),
-        CategoryBanner: load(() => import("./theme2/CategoriesPage/CategoryBannertheme2")),
+        PageBanner: load(() => import("./theme2/CategoriesPage/pageBanner")),
         Products: load(() => import("./theme2/CategoriesPage/Productstheme2")),
         Home: load(() => import("./theme2/Home/page")),
         AccountDetail: load(() => import("./theme2/Accounts/components/AccountDetailtheme2")),
@@ -50,8 +50,9 @@ export const getThemeModules = (theme = "theme1") => {
         BrandList: load(() => import("./theme2/brands/brandLists")),
         WholeSalePage: load(() => import("./theme2/wholesalePage/wholesalepage")),
         BrandCatalogueList: load(() => import("./theme2/brands/brandCatalogueList")),
+        BrandRetailList: load(() => import("./theme2/brands/brandRetailProductList")),
         WholeSaleProductList: load(() => import("./theme2/ProductDetail/wholesale/WholesaleProduct")),
-        OrderDetail: load(() => import("./theme1/Accounts/components/orderDetails")),
+        OrderDetail: load(() => import("./theme2/Accounts/components/orderDetails")),
         Invoice: load(() => import("./theme1/Accounts/components/Invoice")),
         Cart: load(() => import("./theme2/Cart/CartPage")),
         Search: load(() => import("./theme2/Search/search")),

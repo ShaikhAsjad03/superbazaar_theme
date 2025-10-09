@@ -35,14 +35,16 @@ const NavbarClient = ({ Menudata, currencyData }) => {
   const { open } = useModal();
   const dispatch = useDispatch();
   const { data: session } = useSession();
-   const { CartData } = useSelector((state) => state.cartItem);
-   const cartCount = CartData?.data?.length || 0
+  const { CartData } = useSelector((state) => state.cartItem);
+  const cartCount = CartData?.data?.length || 0
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { list } = useSelector((state) => state.wishlist);
-  const token =typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const [showNavbar, setShowNavbar] = useState(true);
+  const lastScrollY = useRef(0);
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const fetchProtectedData = async () => {
     const [wishlist, cartItems] = await Promise.all([
@@ -53,12 +55,28 @@ const NavbarClient = ({ Menudata, currencyData }) => {
     dispatch(setCartItems(cartItems));
   };
 
- useEffect(() => {
-  if (session?.accessToken && token) {
-    fetchProtectedData();
-  }
-  dispatch(setCategoyData(Menudata));
-}, [session, token]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY.current) {
+        setShowNavbar(false);
+      } else {
+        setShowNavbar(true);
+      }
+      lastScrollY.current = window.scrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (session?.accessToken && token) {
+      fetchProtectedData();
+    }
+    dispatch(setCategoyData(Menudata));
+  }, [session, token]);
 
 
   useEffect(() => {
@@ -92,7 +110,10 @@ const NavbarClient = ({ Menudata, currencyData }) => {
   };
 
   return (
-    <nav className="w-full bg-white shadow-md px-6 py-3 relative">
+    <nav
+      className={`w-full bg-white shadow-md px-6 py-3 sticky top-0 z-50 transition-transform duration-300 ${showNavbar ? "translate-y-0" : "-translate-y-full"
+        }`}
+    >
       <div className="flex items-center justify-between relative">
         <div className="flex items-center gap-2">
           <div className="sm:hidden cursor-pointer">
@@ -118,14 +139,14 @@ const NavbarClient = ({ Menudata, currencyData }) => {
 
           <div className="sm:hidden flex justify-center">
             <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="Superbazaar Logo"
-              className=" object-contain"
-              width={260}
-              height={100}
-              priority
-            />
+              <Image
+                src="/logo.png"
+                alt="Superbazaar Logo"
+                className=" object-contain"
+                width={260}
+                height={100}
+                priority
+              />
             </Link>
           </div>
         </div>
@@ -155,15 +176,15 @@ const NavbarClient = ({ Menudata, currencyData }) => {
                   />
                 </Link>
               )}
-        <div className="relative cursor-pointer" onClick={handleCartClick}>
-  <ShoppingBag className="text-zinc-800 w-5 h-5" />
+              <div className="relative cursor-pointer" onClick={handleCartClick}>
+                <ShoppingBag className="text-zinc-800 w-5 h-5" />
 
-  {cartCount > 0 && (
-    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px] sm:text-xs font-semibold rounded-full flex items-center justify-center h-4 min-w-4 px-[2px] shadow-md">
-      {cartCount > 99 ? "99+" : cartCount}
-    </span>
-  )}
-</div>
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px] sm:text-xs font-semibold rounded-full flex items-center justify-center h-4 min-w-4 px-[2px] shadow-md">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </div>
 
 
 

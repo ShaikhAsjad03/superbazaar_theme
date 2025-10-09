@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { getCategoryFilter, getCategoryProducts } from "@/services/productService";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import ProductCard from "../ProductComponent/ProductCard";
 import FilterSidebar from "./FilterSidebar";
 import Pagination from "@/components/Pagination";
@@ -10,8 +10,7 @@ import SelectedFilters from "@/components/SelctedFilter";
 import ProductViewTabs from "../components/common/ProductViewTabs";
 import ProductListToolbar from "../components/common/ProductListToolbar";
 
-const Productstheme2 = ({ category, title }) => {
-    const router = useRouter();
+const Productstheme2 = ({ category, title, webSetting }) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
@@ -30,15 +29,6 @@ const Productstheme2 = ({ category, title }) => {
     const handlePageChange = (page) => {
         setPage(page);
         productSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    const buildFilterQuery = (selectedAttributes) => {
-        const params = new URLSearchParams();
-        Object.entries(selectedAttributes).forEach(([key, values]) => {
-            const arr = Array.isArray(values) ? values : [];
-            if (arr.length > 0) params.set(key, arr.map((v) => v.value).join(","));
-        });
-        return params.toString();
     };
 
     useEffect(() => {
@@ -98,6 +88,7 @@ const Productstheme2 = ({ category, title }) => {
                     open={open}
                     setOpen={setOpen}
                 />
+
                 <FilterSidebar
                     open={open}
                     setOpen={setOpen}
@@ -108,18 +99,21 @@ const Productstheme2 = ({ category, title }) => {
                     mobile={true}
                 />
 
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap mt-4">
                     <div className="hidden lg:block w-1/4 px-2">
-                        <FilterSidebar
-                            open={true}
-                            filterData={filterData}
-                            onApply={handleApplyFilters}
-                            setSelectedAttributes={setSelectedAttributes}
-                            selectedAttributes={selectedAttributes}
-                            mobile={false}
-                        />
+                        <div className="sticky top-4  overflow-y-auto">
+                            <FilterSidebar
+                                open={true}
+                                filterData={filterData}
+                                onApply={handleApplyFilters}
+                                setSelectedAttributes={setSelectedAttributes}
+                                selectedAttributes={selectedAttributes}
+                                mobile={false}
+                            />
+                        </div>
                     </div>
 
+                    {/* Products Grid */}
                     <div className="w-full lg:w-3/4 px-2">
                         <SelectedFilters
                             selectedAttributes={selectedAttributes}
@@ -135,18 +129,21 @@ const Productstheme2 = ({ category, title }) => {
                                     ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3"
                                     : "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                                 }`}
+                            ref={productSectionRef}
                         >
                             {products.map((product) => (
                                 <ProductCard
                                     key={product.id}
                                     product={product}
                                     pathname={`${pathname}/${product?.url || "/"}`}
+                                    webSetting={webSetting}
                                 />
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
+
             <div className="flex justify-center items-center my-4">
                 <Pagination
                     currentPage={page}

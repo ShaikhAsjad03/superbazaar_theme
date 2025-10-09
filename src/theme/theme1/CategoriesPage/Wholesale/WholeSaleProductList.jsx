@@ -6,11 +6,13 @@ import { getCategoryProducts, getWholeSaleProductslists } from "@/services/produ
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import CatalogueCard from "../../../../components/cards/CatalogueCard";
 import { usePathname, useRouter } from "next/navigation";
+import { getPageContent } from "@/services/pageService";
 const ProductCard = dynamic(() => import("@/components/cards/ProductCards"))
 const Pagination = dynamic(() => import("@/components/Pagination"))
 const WholeSaleProductList = ({ category }) => {
     const pathname = usePathname();
     const router = useRouter();
+  const [pageData,setPageData]=useState([])
 
     const [grid, setGrid] = useState(4);
     const [sort, setSort] = useState("");
@@ -34,7 +36,22 @@ const WholeSaleProductList = ({ category }) => {
 
     useEffect(() => {
         fetchProducts();
+
     }, [page, sort, category]);
+   useEffect(() => {
+  const fetchPageData = async () => {
+    try {
+      const res = await getPageContent(category);
+      setPageData(res || []); 
+    } catch (err) {
+      console.error("Error fetching page content:", err);
+      setPageData([]);
+    }
+  };
+
+  fetchPageData();
+}, [category]);
+
 
 
 
@@ -45,11 +62,10 @@ const WholeSaleProductList = ({ category }) => {
         { value: "low", label: "Price: Low to High" },
         { value: "high", label: "Price: High to Low" },
     ];
-    const gridButtons = [
-        { icon: LayoutList, value: 2, label: "2 Grid" },
-        { icon: Grip, value: 3, label: "3 Grid" },
-        { icon: GripVertical, value: 4, label: "4 Grid" },
-    ];
+     const gridButtons = [
+    { icon: LayoutList, value: 4, label: "4 Grid" },
+    { icon: Grip, value: 5, label: "5 Grid" },
+  ];
 
 
      const handlePurchaseChange = (type) => {
@@ -141,10 +157,9 @@ const WholeSaleProductList = ({ category }) => {
                 </div>
             </div>
             <div
-                className={`grid gap-6 
-            ${grid === 2 ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-2" : ""} 
-            ${grid === 3 ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3" : ""} 
-            ${grid === 4 ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : ""}`}
+                className={`grid gap-4 
+            ${grid === 4 ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : ""} 
+            ${grid === 5 ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5" : ""}`}
             >
                 {loading ? (
                     [...Array(grid * 2)].map((_, i) => <ProductCardSkeleton key={i} />)

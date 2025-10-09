@@ -8,7 +8,7 @@ import ProductCard from "@/theme/theme2/ProductComponent/ProductCard";
 import { usePathname } from "next/navigation";
 import { getRelatedProduct } from "@/services/productService";
 
-const RealtedProduct = ({ url }) => {
+const RealtedProduct = ({ url, webSetting }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -64,7 +64,7 @@ const RealtedProduct = ({ url }) => {
                   className="flex justify-center"
                   style={{ width: "305px" }}
                 >
-                  <ProductCard product={item} pathname={item.url} />
+                  <ProductCard product={item} pathname={item.url} webSetting={webSetting} />
                 </SwiperSlide>
               ))}
           </Swiper>

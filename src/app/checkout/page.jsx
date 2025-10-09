@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRightFromLine } from "lucide-react";
 import Address from "./components/address";
 import PaymentMethod from "./components/paymentMethod";
@@ -8,8 +8,10 @@ import { useSelector } from "react-redux";
 import ShippingMethod from "./components/ShippingMethod";
 import { postCCAvenueOrder, postOrder } from "@/services/checkOutService";
 import Loading from "../loading";
-
+import { useRouter } from "next/navigation";
 const CheckoutPage = () => {
+  const router=useRouter()
+  const { webSetting } = useSelector((state) => state.webSetting);
   const [country, setCountry] = useState("India");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -20,6 +22,14 @@ const CheckoutPage = () => {
     ? CartData.data.reduce((acc, item) => acc + (item.weight || 0) * item.quantity, 0)
     : 0;
 
+
+    useEffect(() => {
+    const { valid, message } = validateCheckout();
+    if (!valid) {
+      router.push("/cart"); 
+    }
+  }, [CartData]);
+  
   const [payload, setPayload] = useState({
     billingAddress: null,
     shippingAddress: null,
@@ -80,6 +90,48 @@ const CheckoutPage = () => {
       setLoading(false);
     }
   };
+
+ 
+const validateCheckout = () => {
+  if (!CartData || CartData.data?.length === 0) {
+    return { valid: false, message: "Cart is empty." };
+  }
+
+  const {
+    minSelectionProductCountEnabled,
+    minSelectionProductCount,
+    minSelectionPriceEnabled,
+    minSelectionPrice,
+    bypassIfCatalogueExists,
+  } = webSetting;
+
+  const hasCatalogue = CartData?.data?.some((item) => item.isCatalogue === true);
+
+  if (bypassIfCatalogueExists && hasCatalogue) {
+    return { valid: true, message: "" };
+  }
+
+  let selectionItems = CartData?.data?.filter((item) => item.isCatalogue === false);
+  let totalCount = selectionItems?.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  let totalPrice = CartData?.totalOrder;
+
+  if (minSelectionProductCountEnabled && totalCount < minSelectionProductCount) {
+    return {
+      valid: false,
+      message: `Minimum ${minSelectionProductCount} products required to checkout.`,
+    };
+  }
+
+  if (minSelectionPriceEnabled && totalPrice < minSelectionPrice) {
+    return {
+      valid: false,
+      message: `Minimum total amount ₹${minSelectionPrice} required to checkout.`,
+    };
+  }
+
+  return { valid: true, message: "" };
+};
+
 
   if (!CartData?.data || !Array.isArray(CartData.data) || CartData.data.length === 0) {
     return <Loading/>

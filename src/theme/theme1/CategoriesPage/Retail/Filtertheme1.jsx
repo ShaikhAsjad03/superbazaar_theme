@@ -125,7 +125,6 @@ const Filtertheme1 = ({ open, setOpen, filterData, onApply, setSelectedAttribute
 
           {filterData?.attributes && (
   <>
-    {/* ✅ Show Color filter first */}
     {filterData.attributes
       .filter((attr) => attr.attribute.key.toLowerCase() === "color")
       .map((attr) => (

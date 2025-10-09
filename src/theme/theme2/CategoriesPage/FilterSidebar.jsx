@@ -1,5 +1,5 @@
 "use client";
-import { Minus, Plus, X } from "lucide-react";
+import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import "rc-slider/assets/index.css";
 import Slider from "rc-slider";
@@ -13,13 +13,7 @@ const FilterSidebar = ({
     selectedAttributes,
     mobile,
 }) => {
-    const [sections, setSections] = useState({
-        price: true,
-        color: true,
-        fabric: true,
-        occasion: true,
-        brands: true,
-    });
+
     const [openSections, setOpenSections] = useState({});
     const [priceRange, setPriceRange] = useState([0, 0]);
 
@@ -69,7 +63,7 @@ const FilterSidebar = ({
     const renderSection = (title, name, children) => (
         <div className="mb-4">
             <div
-                className="flex justify-between items-center border-b border-gray-200 pb-2 mb-4 mt-5 cursor-pointer"
+                className="flex justify-between items-center border-b border-gray-200 pb-2 mb-4 cursor-pointer"
                 onClick={() => toggleSection(name)}
             >
                 <span className="font-semibold">{title}</span>
@@ -79,7 +73,8 @@ const FilterSidebar = ({
     );
 
     const content = (
-        <div className="bg-white rounded-lg shadow p-4 space-y-6 h-full overflow-y-auto">
+        filterData.priceRange !== undefined &&
+        <div className="bg-white rounded-lg shadow p-4 space-y-6 h-full overflow-y-auto ">
             {renderSection(
                 "Price",
                 "price",
@@ -90,10 +85,10 @@ const FilterSidebar = ({
                         range
                         value={priceRange}
                         onChange={(val) => setPriceRange(val)}
-                        trackStyle={[{ backgroundColor: "#3B82F6" }]}
+                        trackStyle={[{ backgroundColor: "#222" }]}
                         handleStyle={[
-                            { borderColor: "#3B82F6" },
-                            { borderColor: "#3B82F6" },
+                            { borderColor: "#222" },
+                            { borderColor: "#222" },
                         ]}
                         railStyle={{ backgroundColor: "#E5E7EB" }}
                     />
@@ -102,10 +97,10 @@ const FilterSidebar = ({
                             type="text"
                             value={`${priceRange[0]} - ${priceRange[1]}`}
                             readOnly
-                            className="flex-1 border border-gray-400 rounded px-2 py-1 text-sm mr-2"
+                            className="flex-1 border border-gray-400 rounded p-2 text-sm mr-2"
                         />
                         <button
-                            className="px-4 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition"
+                            className="p-2 bg-red-800 uppercase text-white rounded text-sm hover:bg-black transition"
                             onClick={handleApply}
                         >
                             Filter
@@ -120,42 +115,62 @@ const FilterSidebar = ({
                         att.attribute.key,
                         att.attribute.name === "Color" ? (
                             <ul className="flex flex-wrap gap-3">
-                                {att?.value?.map((color) => (
-                                    <li
-                                        key={`${att.attribute.key}-${color.value}`}
-                                    >
-                                        <span
-                                            onClick={() =>
-                                                handleAttributeChange(
-                                                    att.attribute.key,
-                                                    color.value,
-                                                    color.name
+                                {att?.value?.map((color) => {
+                                    return (
+                                        <li key={`${att.attribute.key}-${color.value}`}                                        >
+                                            {/* <span
+                                                onClick={() =>
+                                                    handleAttributeChange(
+                                                        att.attribute.key,
+                                                        color.value,
+                                                        color.name
+                                                    )
+                                                }
+                                                className={`block w-8 h-8 rounded-md cursor-pointer relative group ${selectedAttributes[
+                                                    att.attribute.key
+                                                ]?.some(
+                                                    (item) =>
+                                                        item.value ===
+                                                        color.value
                                                 )
-                                            }
-                                            className={`block w-8 h-8 rounded-md cursor-pointer relative group ${selectedAttributes[
-                                                att.attribute.key
-                                            ]?.some(
-                                                (item) =>
-                                                    item.value ===
-                                                    color.value
-                                            )
-                                                ? "ring-2 ring-blue-500"
-                                                : ""
-                                                }`}
-                                            style={{
-                                                backgroundColor: color.colour,
-                                                border:
-                                                    color.colour === "#FFFFFF"
-                                                        ? "1px solid #ccc"
-                                                        : "none",
-                                            }}
-                                        >
-                                            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
-                                                {color.name}
+                                                    ? "ring-2 ring-blue-500"
+                                                    : ""
+                                                    }`}
+                                                style={{
+                                                    backgroundColor: color.colour,
+                                                    border:
+                                                        color.colour === "#FFFFFF"
+                                                            ? "1px solid #ccc"
+                                                            : "none",
+                                                }}
+                                            > */}
+                                            <span
+                                                onClick={() =>
+                                                    handleAttributeChange(att.attribute.key, color.value, color.name)
+                                                }
+                                                className={`block w-8 h-8 rounded-md cursor-pointer relative group ${selectedAttributes[att.attribute.key]?.some(
+                                                    (item) => item.value === color.value
+                                                )
+                                                    ? "ring-2 ring-blue-500"
+                                                    : ""
+                                                    } ${color.colour === "#FFFFFF" ? "border border-gray-300" : "border-none"
+                                                    } ${color.name === "Multi Color"
+                                                        ? "bg-gradient-to-r from-indigo-500 via-purple-500 via-red-500 via-pink-500  to-green-500"
+                                                        : ""
+                                                    }`}
+                                                style={{
+                                                    background:
+                                                        color.name !== "Multi Color" ? color.colour : undefined,
+                                                }}
+                                            >
+
+                                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                                    {color.name}
+                                                </span>
                                             </span>
-                                        </span>
-                                    </li>
-                                ))}
+                                        </li>
+                                    )
+                                })}
                             </ul>
                         ) : (
                             <ul className="flex flex-col gap-2">
@@ -191,40 +206,43 @@ const FilterSidebar = ({
                         )
                     )}
                 </React.Fragment>
-            ))}
+            ))
+            }
 
-            {renderSection(
-                "Brands",
-                "brand",
-                <ul className="flex flex-col gap-2">
-                    {filterData?.brands?.map((brand) => (
-                        <li
-                            key={`brand-${brand.url}`}
-                            className="flex items-center gap-2"
-                        >
-                            <input
-                                id={brand.url}
-                                type="checkbox"
-                                checked={!!selectedAttributes["brand"]?.some(
-                                    (item) => item.value === brand.url
-                                )}
-                                onChange={() =>
-                                    handleAttributeChange("brand", brand.url, brand.name)
-                                }
-                                className="w-4 h-4"
-                            />
-
-                            <label
-                                htmlFor={brand.url}
-                                className="text-sm"
+            {
+                renderSection(
+                    "Brands",
+                    "brand",
+                    <ul className="flex flex-col gap-2">
+                        {filterData?.brands?.map((brand) => (
+                            <li
+                                key={`brand-${brand.url}`}
+                                className="flex items-center gap-2"
                             >
-                                {brand.name}
-                            </label>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+                                <input
+                                    id={brand.url}
+                                    type="checkbox"
+                                    checked={!!selectedAttributes["brand"]?.some(
+                                        (item) => item.value === brand.url
+                                    )}
+                                    onChange={() =>
+                                        handleAttributeChange("brand", brand.url, brand.name)
+                                    }
+                                    className="w-4 h-4"
+                                />
+
+                                <label
+                                    htmlFor={brand.url}
+                                    className="text-sm"
+                                >
+                                    {brand.name}
+                                </label>
+                            </li>
+                        ))}
+                    </ul>
+                )
+            }
+        </div >
     );
 
     if (mobile) {

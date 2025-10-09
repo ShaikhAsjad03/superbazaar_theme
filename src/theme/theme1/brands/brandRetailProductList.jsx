@@ -199,8 +199,7 @@ const BrandRetailProductList=({ brand })=>{
                 ) : products?.length > 0 ? (
                     products.map((item, index) => (
                         <div key={index}>
-                          {console.log(item)}
-                             <ProductCard data={item} grid={grid} redirectUrl={item?.categories?.[0]?.category?.url}/>
+                             <ProductCard data={item} grid={grid} redirectUrl={item?.categories?.[0]?.category?.menus?.[0]?.url || null}/>
                         </div>
                     ))
                 ) : (

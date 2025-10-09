@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Autoplay, Navigation } from "swiper/modules"
 import "swiper/css"
@@ -7,9 +7,20 @@ import "swiper/css/pagination"
 import SliderNavigation from "../CardsSlider/SliderNavigation"
 import CatalogueCard from "../../../../components/cards/CatalogueCard"
 import HomeProductCard from "@/components/cards/HomeProductCard"
+import { useSelector } from "react-redux"
 
-const Products = ({ fullSetProducts = [], singleProducts = [], url }) => {
+const Products = ({ fullSetProducts = [], singleProducts = [], url, title }) => {
+  const { webSetting } = useSelector((state) => state.webSetting);
   const [activeTab, setActiveTab] = useState("wholesale")
+
+  useEffect(() => {
+    if (webSetting?.purchaseType === "wholesale") {
+      setActiveTab("wholesale")
+    } else if (webSetting?.purchaseType === "retail") {
+      setActiveTab("retail")
+    }
+  }, [webSetting?.purchaseType])
+
 
   const tabsData = [
     { title: "Full Set", url: "wholesale" },
@@ -17,7 +28,8 @@ const Products = ({ fullSetProducts = [], singleProducts = [], url }) => {
   ]
 
   const displayedProducts = activeTab === "wholesale" ? fullSetProducts : singleProducts
-
+  const prevClass = `swiper-button-prev-${url}`;
+  const nextClass = `swiper-button-next-${url}`;
   return (
     <div className="mx-auto px-4 mt-10  
       w-full 
@@ -26,13 +38,17 @@ const Products = ({ fullSetProducts = [], singleProducts = [], url }) => {
       lg:max-w-[960px] 
       xl:max-w-[1240px]
       2xl:max-w-[1320px]">
-      
+
+      {title && (
+        <h1 className="text-xl font-medium text-center mb-2">{title}</h1>
+      )}
+
       <div className="w-full flex justify-center items-center gap-6 mb-8">
         {tabsData.map((tab) => (
           <button
             key={tab.url}
             onClick={() => setActiveTab(tab.url)}
-            className={`pb-2 text-sm sm:text-base md:text-lg lg:text-xl font-medium transition-colors duration-300
+            className={`pb-2 text-sm sm:text-base md:text-md lg:text-lg font-medium transition-colors duration-300
               ${activeTab === tab.url
                 ? "text-black border-b-2 border-black"
                 : "text-gray-500 hover:text-black"
@@ -45,17 +61,17 @@ const Products = ({ fullSetProducts = [], singleProducts = [], url }) => {
 
       <div className="mx-auto w-full">
         <div className="relative w-full">
-          <SliderNavigation position="center" />
+          <SliderNavigation position="center" prevClass={prevClass} nextClass={nextClass} />
           <Swiper
             grabCursor
             loop
-            slidesPerView={2} 
+            slidesPerView={2}
             spaceBetween={10}
             autoplay={{
               delay: 2500,
               disableOnInteraction: false,
             }}
-            navigation={{ nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }}
+            navigation={{ nextEl: `.${nextClass}`, prevEl: `.${prevClass}` }}
             modules={[Autoplay, Navigation]}
             className="w-full"
             breakpoints={{

@@ -35,7 +35,7 @@ const Footer = () => {
       setSocialIcons(socialIconData?.data)
       setWebSettingState(webData)
       dispatch(setWebSetting(webData))
-      setIsReady(true) 
+      setIsReady(true)
     } catch (err) {
       console.error("Error loading footer data:", err)
     }
@@ -48,7 +48,20 @@ const Footer = () => {
   const toggleSection = (index) => {
     setOpenSection(openSection === index ? null : index)
   }
+  const getMenuLink = (item) => {
+    if (item.type === "CATEGORY") {
+      return webSetting?.purchaseType === "wholesale"
+        ? `/wholesale/${item.url}`
+        : `/retail/${item.url}`;
+    }
+    if (item.type == "CUSTOM" || item.type == "STATIC") {
+      return `/${item.url}`;
+    }
 
+    if (item.url === "wholesale") return "/wholesale";
+
+
+  };
   const handleNewsLetter = async (e) => {
     e.preventDefault()
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -79,7 +92,7 @@ const Footer = () => {
   }
 
   if (!isReady) {
-    return null 
+    return null
   }
 
   return (
@@ -124,29 +137,22 @@ const Footer = () => {
             </span>
           </div>
           <div
-            className={`transition-all duration-300 overflow-hidden ${
-              openSection === 0 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"
-            }`}
+            className={`transition-all duration-300 overflow-hidden ${openSection === 0 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"
+              }`}
           >
             <ul className="space-y-2 text-sm text-gray-300">
-              {data &&
-                data?.length > 0 &&
-                data.map((item, i) => (
+              {data && data?.length > 0 && data.map((item, i) => {
+                return (
                   <li key={i}>
                     <Link
-                      href={
-                        item.url === "wholesale"
-                          ? "/wholesale"
-                          : webSetting?.purchaseType === "wholesale"
-                          ? `/wholesale/${item.url}`
-                          : `/retail/${item.url}`
-                      }
+                      href={getMenuLink(item)}
                       className="hover:text-white transition-colors"
                     >
-                      {item?.name}
+                      {item?.label}
                     </Link>
                   </li>
-                ))}
+                )
+              })}
             </ul>
           </div>
         </div>
@@ -162,9 +168,8 @@ const Footer = () => {
             </span>
           </div>
           <div
-            className={`transition-all duration-300 overflow-hidden ${
-              openSection === 1 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"
-            }`}
+            className={`transition-all duration-300 overflow-hidden ${openSection === 1 ? "max-h-screen py-2" : "max-h-0 md:max-h-none md:py-2"
+              }`}
           >
             <ul className="space-y-2 text-sm text-gray-300">
               {cmsData &&
@@ -203,9 +208,8 @@ const Footer = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md text-sm font-medium transition-colors ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
+              className={`bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-md text-sm font-medium transition-colors ${loading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
             >
               {loading ? (
                 <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-white"></span>

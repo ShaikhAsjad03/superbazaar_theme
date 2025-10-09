@@ -73,36 +73,35 @@ const WishlistButton = ({
         }`}
       style={variant === "card" ? { transitionDelay: `${delay}ms` } : {}}
     >
-     <button
-  onClick={handleWishlistClick}
-  disabled={wishlistLoading}
-  className={`group flex items-center justify-center transition-all duration-300 
+      <button
+        onClick={handleWishlistClick}
+        disabled={wishlistLoading}
+        className={`group flex items-center justify-center transition-all duration-300 
     ${variant === "detail"
-      ? `w-10 h-10 rounded-md border ${
-          isWishlisted
-            ? "bg-white text-red-300"
-            : "bg-white text-white-700 hover:bg-black hover:text-white"
-        }`
-      : "p-2 rounded-full bg-white text-white-700 shadow-md text-black hover:bg-black hover:text-white  hover:shadow-lg"
-    }`}
-  aria-label="Add to Wishlist"
->
-  {wishlistLoading ? (
-    <Loader2 className="h-5 w-5 animate-spin" />
-  ) : isWishlisted ? (
-    <Heart
-      size={20}
-      className="text-red-500"
-      fill="currentColor"
-    />
-  ) : (
-    <Heart
-      size={20}
-      fill="none"
-      stroke="currentColor"
-    />
-  )}
-</button>
+            ? `w-10 h-10 rounded-md  ${isWishlisted
+              ? "bg-white text-red-300"
+              : "bg-white text-white-700 hover:bg-black hover:text-white"
+            }`
+            : "p-2 rounded-full bg-white text-white-700 shadow-md text-black hover:bg-black hover:text-white  hover:shadow-lg"
+          }`}
+        aria-label="Add to Wishlist"
+      >
+        {wishlistLoading ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : isWishlisted ? (
+          <Heart
+            size={18}
+            className="text-red-500"
+            fill="currentColor"
+          />
+        ) : (
+          <Heart
+            size={18}
+            fill="none"
+            stroke="currentColor"
+          />
+        )}
+      </button>
 
 
       {variant === "card" && (

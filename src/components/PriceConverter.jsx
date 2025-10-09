@@ -1,4 +1,5 @@
 "use client";
+import { convertPrice } from "@/helper/convertPrice";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -19,13 +20,14 @@ const PriceConverter = ({ price }) => {
   const currencyData = list.find((c) => c.code === selected.code);
   const currencyRate = currencyData ? currencyData.rate : 1;
   const convertedPrice = price / currencyRate;
-
-  return (
-    <span>
-      {selected.symbol}&nbsp;
-      {convertedPrice.toFixed(2)}
-    </span>
-  );
+  const converted = convertPrice(price, currencyData);
+return <span>{converted}</span>;
+  // return (
+  //   <span>
+  //     {selected.symbol}&nbsp;
+  //     {convertedPrice.toFixed(2)}
+  //   </span>
+  // );
 };
 
 export default PriceConverter;

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ImageUrl } from "@/helper/imageUrl";
 import PriceConverter from "@/components/PriceConverter";
 import WishlistButton from "./attribute/WishlistButton";
+import PriceVisibilityProduct from "../PriceVisibilityProduct";
 
 const HomeProductCard = ({ data, redirectUrl }) => {
     const pathname = usePathname();
@@ -54,25 +55,12 @@ const HomeProductCard = ({ data, redirectUrl }) => {
                     </h3>
                 </Link>
 
-                <div className="flex flex-wrap items-center gap-2 mt-2">
-                    <span className="text-zinc-900 text-base sm:text-sm font-medium">
-                        <PriceConverter price={data?.offer_price} />
-                    </span>
+                <PriceVisibilityProduct
+                offerPrice={data?.offer_price}
+                retailPrice={data?.retail_price}
+                retailDiscount={data?.retail_discount}
+                />
 
-                    {data?.retail_discount !== 0 && (
-                        <span className="text-gray-400 line-through text-sm">
-                            <PriceConverter price={data?.retail_price} />
-                        </span>
-                    )}
-
-                    {data?.retail_discount !== 0 &&
-                        data?.retail_price &&
-                        data?.offer_price && (
-                            <span className="bg-green-100 text-green-700 text-xs sm:text-sm px-2 py-0.5 rounded-md">
-                                {data?.retail_discount}% OFF
-                            </span>
-                        )}
-                </div>
             </div>
         </div>
     )

@@ -17,6 +17,7 @@ import Link from "next/link"
 import WishlistButton from "@/components/cards/attribute/WishlistButton"
 import dynamic from "next/dynamic"
 import { downloadAllImages, ImageZip } from "@/helper/imageDownload"
+import PriceVisibilityProductDetail from "@/components/PriceVisibilityProductDetail"
 const InquiryForm = dynamic(() => import("../components/inquiry"));
 
 const Catalogue = ({ CatalogueDetailData, stitching, category }) => {
@@ -95,9 +96,14 @@ const Catalogue = ({ CatalogueDetailData, stitching, category }) => {
                             ))}
                             <h1 className="text-xl font-medium">{CatalogueDetailData?.name}</h1>
                             <p className="text-gray-500 mt-1">{CatalogueDetailData?.cat_code}</p>
-                            <p className="text-xl font-semibold mt-2">
+                            <PriceVisibilityProductDetail
+                            offerPrice={CatalogueDetailData?.offer_price || 0}
+                            retailPrice={CatalogueDetailData?.price || 0}
+                            retailDiscount={CatalogueDetailData?.catalogue_discount || 0}
+                            />
+                            {/* <p className="text-xl font-semibold mt-2">
                                 ₹{CatalogueDetailData?.offer_price}
-                            </p>
+                            </p> */}
                         </div>
                         <p className="flex items-center gap-2 bg-slat-100 text-zinc-800 font-medium px-3 py-1 rounded-lg w-fit">
                             <span className="font-bold">⏱</span> Dispatch Time: 7 Working Days
@@ -220,12 +226,11 @@ const Catalogue = ({ CatalogueDetailData, stitching, category }) => {
                     </div>
                 </div>
             </div>
-
             <div className="w-full mt-10">
                 <RalatedCatalogue url={CatalogueDetailData.url} />
             </div>
 
-            {shareOpen && (
+           {shareOpen && (
                 <SharePopup
                     isOpen={shareOpen}
                      name={CatalogueDetailData.name}

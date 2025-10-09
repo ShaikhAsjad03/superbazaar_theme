@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ShieldCheck, Lock, Trash2, Loader2, X } from "lucide-react";
 import { ImageUrl } from "@/helper/imageUrl";
@@ -10,12 +10,16 @@ import Link from "next/link";
 import PriceConverter from "@/components/PriceConverter";
 import Label from "@/components/Label";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { convertPrice } from "@/helper/convertPrice";
 
 const CartItems = ({ CartData }) => {
   const router = useRouter();
+  const { webSetting } = useSelector((state) => state.webSetting);
   const [openCatalogueIds, setOpenCatalogueIds] = useState([]);
   const [error, setError] = useState(null);
-
+  const { list, selected } = useSelector((state) => state.currency);
+    const currencyData = list?.find((c) => c.code === selected?.code);
   const {
     incrementQuantity,
     decrementQuantity,
@@ -32,14 +36,20 @@ const CartItems = ({ CartData }) => {
 
   const handleCheckout = () => {
     if (!CartData?.data || CartData.data.length === 0) {
-      setError("Your cart is empty");
+      setError("Your cart is empty.");
       return;
     }
 
     const outOfStock = CartData?.data?.filter((item) => item.outOfStock);
-
     if (outOfStock && outOfStock.length > 0) {
-      setError("Remove out of Stock Product");
+      setError("Remove out-of-stock products before checkout.");
+      return;
+    }
+
+    const { valid, message } = validateCheckout();
+
+    if (!valid) {
+      setError(message || "You cannot proceed to checkout.");
       return;
     }
 
@@ -47,9 +57,79 @@ const CartItems = ({ CartData }) => {
     router.push("/checkout");
   };
 
+
+  const validateCheckout = () => {
+    if (!CartData || !CartData.data?.length) {
+      return { valid: false, message: "Cart is empty." };
+    }
+
+    const purchaseType = webSetting?.purchaseType || "retail";
+    const totalOrder = CartData?.totalOrder || 0;
+
+    const catalogueItems = CartData.data.filter((item) => item.isCatalogue);
+    const selectionItems = CartData.data.filter((item) => !item.isCatalogue);
+
+    const hasCatalogue = catalogueItems.length > 0;
+    const totalCatalogueCount = catalogueItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    const totalSelectionCount = selectionItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+    if (purchaseType === "wholesale") {
+      const { countEnable, count, priceEnabled, totalPrice } = webSetting?.wholeSaleCheckout || {};
+
+      if (countEnable && totalCatalogueCount < count) {
+        return {
+          valid: false,
+          message: `Minimum ${count} catalogues required to checkout.`,
+        };
+      }
+      if (priceEnabled && totalOrder < totalPrice) {
+        return {
+          valid: false,
+           message: `Minimum total amount ${convertPrice(totalPrice, currencyData)} required to checkout.`,
+        };
+      }
+
+      return { valid: true, message: "" };
+    }
+
+    const { countEnable, count, priceEnabled, totalPrice, bypassIfCatalogueExists } =
+      webSetting?.semiWholeSaleCheckout || {};
+
+    if (bypassIfCatalogueExists && hasCatalogue) {
+      return { valid: true, message: "" };
+    }
+
+    if (countEnable && totalSelectionCount < count) {
+      return {
+        valid: false,
+        message: `Minimum ${count} products required to checkout.`,
+      };
+    }
+
+    if (priceEnabled && totalOrder < totalPrice) {
+      return {
+        valid: false,
+        message: `Minimum total amount ${convertPrice(totalPrice, currencyData)} required to checkout.`,
+      };
+    }
+
+    return { valid: true, message: "" };
+  };
   return (
     <div className="mx-auto mt-7 w-full sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px] px-4 py-8">
+      {error && (
+        <div className="bg-red-200 border border-dotted border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 flex items-start justify-between" role="alert">
+          <div>
+            <strong className="font-medium">Error: </strong>
+            <span className="block sm:inline text-sm">{error}</span>
+          </div>
+          <button onClick={() => setError(null)} className="ml-4">
+            <X className="w-5 h-5 text-white" />
+          </button>
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-6">
+
         <div className="flex-1 bg-white shadow rounded-2xl p-6">
           <FreeShippingProgress currentAmount={100} shippingThreshold={100} isModalOpen={true} />
           <h2 className="text-xl font-semibold mb-4">Cart Items</h2>
@@ -61,6 +141,8 @@ const CartItems = ({ CartData }) => {
               {CartData?.data?.map((item) => {
                 let sizeObj;
                 const isLoading = loadingIds.includes(item.id);
+                const basePath = item.isCatalogue ? "catalogue" : "retail";
+                const url = `/${basePath}/${item?.category?.url}/${item?.url}`
                 try {
                   sizeObj = JSON.parse(item.size);
                 } catch {
@@ -72,20 +154,23 @@ const CartItems = ({ CartData }) => {
                     key={item.id}
                     className="flex flex-col md:grid md:grid-cols-12 items-start justify-between py-4 gap-4"
                   >
-                    {/* Product Info */}
                     <div className="col-span-6 flex gap-4 w-full">
                       <div className="relative">
                         {item?.outOfStock && <Label text="Out of stock" danger />}
-                        <Image
-                          src={ImageUrl(item.image)}
-                          alt={item.name}
-                          width={100}
-                          height={100}
-                          className="rounded-lg object-cover max-h-[150px] w-auto"
-                        />
+                        <Link href={url}>
+                          <Image
+                            src={ImageUrl(item.image)}
+                            alt={item.name}
+                            width={100}
+                            height={100}
+                            className="rounded-lg object-cover max-h-[150px] w-auto"
+                          />
+                        </Link>
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-sm md:text-base">{item.name}</h3>
+                        <Link href={url} className="block font-medium text-sm text-gray-800 hover:text-red-600  transition" >
+                          <h3 className="font-semibold text-sm md:text-base">{item.name}</h3>
+                        </Link>
                         <StitchingOptions stitching={item.stitching} />
                         {sizeObj?.value && (
                           <p className="text-sm text-gray-500">Size: {sizeObj.value}</p>
@@ -107,12 +192,14 @@ const CartItems = ({ CartData }) => {
                                     <div className="flex items-center gap-2">
                                       <div className="w-16 h-16 relative flex-shrink-0">
                                         {p?.outOfStock && <Label text="Out of stock" danger />}
-                                        <Image
-                                          src={ImageUrl(p.image[0])}
-                                          alt={p.name}
-                                          fill
-                                          className="object-contain rounded"
-                                        />
+                                        <Link href={url}>
+                                          <Image
+                                            src={ImageUrl(p.image[0])}
+                                            alt={p.name}
+                                            fill
+                                            className="object-contain rounded"
+                                          />
+                                        </Link>
                                       </div>
                                       <div className="flex flex-col">
                                         <span className="truncate max-w-[120px]">{p.name}</span>
@@ -128,12 +215,10 @@ const CartItems = ({ CartData }) => {
                       </div>
                     </div>
 
-                    {/* Price */}
                     <div className="col-span-2 text-center font-medium mt-2 md:mt-0">
                       ₹{item.price}
                     </div>
 
-                    {/* Quantity */}
                     <div className="col-span-2 mt-2 md:mt-0">
                       <div className="flex items-center border border-gray-400 rounded-md overflow-hidden w-24 md:w-20">
                         <button
@@ -157,7 +242,6 @@ const CartItems = ({ CartData }) => {
                       </p>
                     </div>
 
-                    {/* Subtotal & Remove */}
                     <div className="col-span-2 flex justify-between md:justify-end items-center gap-2 font-medium mt-2 md:mt-0">
                       <p>₹{item.subtotal}</p>
                       <button
@@ -175,20 +259,8 @@ const CartItems = ({ CartData }) => {
           )}
         </div>
 
-        {/* Order Summary */}
-        <div className="w-full lg:w-1/3 bg-white shadow rounded-2xl p-6">
-          {error && (
-            <div className="bg-red-200 border border-dotted border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 flex items-start justify-between" role="alert">
-              <div>
-                <strong className="font-medium">Error: </strong>
-                <span className="block sm:inline text-sm">{error}</span>
-              </div>
-              <button onClick={() => setError(null)} className="ml-4">
-                <X className="w-5 h-5 text-white" />
-              </button>
-            </div>
-          )}
 
+        <div className="w-full lg:w-1/3 bg-white shadow rounded-2xl p-6">
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
           <div className="border-b-1 border-gray-300"></div>
           <div className="space-y-2 text-sm mt-5">

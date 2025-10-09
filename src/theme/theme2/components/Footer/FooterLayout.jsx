@@ -50,6 +50,18 @@ const FooterLayout = ({ webSetting }) => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    const getMenuLink = (item) => {
+        if (item.type === "CATEGORY") {
+            return webSetting?.purchaseType === "wholesale"
+                ? `/wholesale/${item.url}`
+                : `/retail/${item.url}`;
+        }
+        if (item.type == "CUSTOM" || item.type == "STATIC") {
+            return `/${item.url}`;
+        }
+
+        if (item.url === "wholesale") return "/wholesale";
+    };
     const handleNewsLetter = async (e) => {
         e.preventDefault();
 
@@ -107,9 +119,12 @@ const FooterLayout = ({ webSetting }) => {
                                 {data && data?.length > 0 && data.map((item, i) => {
                                     return (
                                         <li key={i}>
-                                            <Link href={item.url === "wholesale" ? "/wholesale" : webSetting?.purchaseType === "wholesale" ? `/wholesale/${item.url}`
-                                                : `/retail/${item.url}`} className="hover:text-white transition-colors">
-                                                {item?.name}
+                                            <Link
+                                                href={getMenuLink(item)}
+                                                // href={item.url === "wholesale" ? "/wholesale" : webSetting?.purchaseType === "wholesale" ? `/wholesale/${item.url}`
+                                                //     : `/retail/${item.url}`}
+                                                className="hover:text-white transition-colors">
+                                                {item?.label}
                                             </Link>
                                         </li>
                                     )

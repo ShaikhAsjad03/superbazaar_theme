@@ -4,8 +4,8 @@ import { getUserInfo } from "@/services/accountsService";
 import { getThemeModules } from "@/theme/themeConfig";
 import { getTheme } from "@/services/layout";
 const AccountDetailsPag = async () => {
-    const themeData = await getTheme();
-      const currentTheme = themeData?.name || "theme1"; 
+  const themeData = await getTheme();
+  const currentTheme = themeData?.name || "theme1";
   const session = await getServerSession(authOptions);
   const { id } = session?.user
   const data = await getUserInfo(id)

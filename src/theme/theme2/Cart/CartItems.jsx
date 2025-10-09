@@ -1,15 +1,17 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { Trash2, Loader2 } from "lucide-react";
+import { Trash2, Loader2, X } from "lucide-react";
 import { ImageUrl } from "@/helper/imageUrl";
 import StitchingOptions from "@/components/StitchingOption";
 import { useCartActions } from "@/hooks/useCartActions";
 import PriceConverter from "@/components/PriceConverter";
 import { useRouter } from "next/navigation";
+import { getWebSetting } from "@/services/webSetting";
 
-const CartItems = ({ cartItems }) => {
-  const router = useRouter()
+const CartItems = ({ cartItems, webSetting }) => {
+  const router = useRouter();
+  const [error, setError] = useState(null);
   const [openCatalogueIds, setOpenCatalogueIds] = useState([]);
   const {
     incrementQuantity,
@@ -26,6 +28,88 @@ const CartItems = ({ cartItems }) => {
   const totalSubtotal = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
   const totalTax = 0;
   const totalOrder = totalSubtotal + totalTax;
+
+  const handleCheckout = () => {
+    if (!cartItems || cartItems.length === 0) {
+      setError("Your cart is empty.");
+      return;
+    }
+
+    const outOfStock = cartItems?.filter((item) => item.outOfStock);
+    if (outOfStock && outOfStock.length > 0) {
+      setError("Remove out-of-stock products before checkout.");
+      return;
+    }
+
+    const { valid, message } = validateCheckout();
+
+    if (!valid) {
+      setError(message || "You cannot proceed to checkout.");
+      return;
+    }
+
+    setError(null);
+    router.push("/checkout");
+  };
+
+  const validateCheckout = () => {
+    if (!cartItems || !cartItems.length) {
+      return { valid: false, message: "Cart is empty." };
+    }
+
+    const purchaseType = webSetting?.purchaseType || "retail";
+    const totalOrder = cartItems?.totalOrder || 0;
+
+    const catalogueItems = cartItems.filter((item) => item.isCatalogue);
+    const selectionItems = cartItems.filter((item) => !item.isCatalogue);
+
+    const hasCatalogue = catalogueItems.length > 0;
+    const totalCatalogueCount = catalogueItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    const totalSelectionCount = selectionItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+    if (purchaseType === "wholesale") {
+      const { countEnable, count, priceEnabled, totalPrice } = webSetting?.wholeSaleCheckout || {};
+
+      if (countEnable && totalCatalogueCount < count) {
+        return {
+          valid: false,
+          message: `Minimum ${count} catalogues required to checkout.`,
+        };
+      }
+
+      if (priceEnabled && totalOrder < totalPrice) {
+        return {
+          valid: false,
+          message: `Minimum total amount ₹${totalPrice} required to checkout.`,
+        };
+      }
+
+      return { valid: true, message: "" };
+    }
+
+    const { countEnable, count, priceEnabled, totalPrice, bypassIfCatalogueExists } =
+      webSetting?.semiWholeSaleCheckout || {};
+
+    if (bypassIfCatalogueExists && hasCatalogue) {
+      return { valid: true, message: "" };
+    }
+
+    if (countEnable && totalSelectionCount < count) {
+      return {
+        valid: false,
+        message: `Minimum ${count} products required to checkout.`,
+      };
+    }
+
+    if (priceEnabled && totalOrder < totalPrice) {
+      return {
+        valid: false,
+        message: `Minimum total amount ₹${totalPrice} required to checkout.`,
+      };
+    }
+
+    return { valid: true, message: "" };
+  };
 
   return (
     <div className="container mx-auto text-left w-full sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1280px] 2xl:max-w-[1320px] px-4 py-8">
@@ -187,12 +271,22 @@ const CartItems = ({ cartItems }) => {
                     <span> <PriceConverter price={totalOrder} /></span>
                   </div>
                 </div>
-                <button
-                  onClick={() => router.push("/checkout")}
-                  className="w-full py-2 bg-zinc-900 text-white rounded hover:bg-grey-700 text-center"
+                {error && (
+                  <div className="bg-red-200 border border-dotted border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 mb-2 flex items-start justify-between" role="alert">
+                    <div className="">
+                      <strong className="font-medium text-sm">Error: </strong>
+                      <span className="block sm:inline text-sm ">{error}</span>
+                    </div>
+                    <button onClick={() => setError(null)} className="">
+                      <X className="w-5 h-5 text-black" />
+                    </button>
+                  </div>
+                )}
+                <button onClick={handleCheckout} className="w-full py-2 bg-zinc-900 text-white rounded hover:bg-grey-700 text-center"
                 >
                   Proceed to Checkout
                 </button>
+
                 <div className="text-center">
                   <Image
                     alt="safe payment"
@@ -202,6 +296,7 @@ const CartItems = ({ cartItems }) => {
                     className="rounded-lg object-contain"
                   />
                 </div>
+
               </div>
             </div>
           </div>

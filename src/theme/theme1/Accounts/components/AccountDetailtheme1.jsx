@@ -35,10 +35,13 @@ export default function AccountDetailTheme1({ data }) {
             <p className="col-span-1 sm:col-span-3 break-words">
               <span className="font-medium">Email ID :</span> {userData?.email}
             </p>
+
+            <p className="col-span-1 sm:col-span-3 break-words">
+              <span className="font-medium">User Type :</span> {userData?.type}
+            </p>
           </div>
         </div>
       </div>
-
       <hr className="my-4 border-zinc-300" />
       <UpdateProfile
         open={open}

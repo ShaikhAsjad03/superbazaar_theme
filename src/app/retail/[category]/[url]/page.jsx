@@ -1,5 +1,6 @@
 import { getTheme } from "@/services/layout";
 import { getProductAttributes, getProductdetail, getProductStitching } from "@/services/productService";
+import { getWebSetting } from "@/services/webSetting";
 import { getThemeModules } from "@/theme/themeConfig";
 
 
@@ -17,11 +18,11 @@ export async function generateMetadata({ params }) {
 
 
 const ProductDetailpage = async ({ params }) => {
-  const themeData = await getTheme();
-      const currentTheme = themeData?.name || "theme1"; 
-          const { category, url } = await params;
+    const themeData = await getTheme();
+    const currentTheme = themeData?.name || "theme1";
+    const { category, url } = await params;
     const { ProductDetail } = getThemeModules(currentTheme);
-
+    const webSetting = await getWebSetting();
     const [data, stitching, attributes] = await Promise.all([
         getProductdetail(url),
         getProductStitching(url),
@@ -33,7 +34,8 @@ const ProductDetailpage = async ({ params }) => {
             product={data.data}
             Stitching={stitching.data}
             attributes={attributes.data}
-            category={category} />
+            category={category}
+            webSetting={webSetting} />
     )
 }
 

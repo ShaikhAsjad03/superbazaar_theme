@@ -6,6 +6,7 @@ const initialState = {
   forget: false,
   otp: false,
   confirmPassword: false,
+  signupwholesale:false
 };
 
 const modalSlice = createSlice({

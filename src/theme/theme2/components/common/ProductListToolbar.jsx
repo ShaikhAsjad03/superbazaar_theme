@@ -73,9 +73,8 @@ const ProductListToolbar = ({
                                 key={btn.value}
                                 onClick={() => setGrid(btn.value)}
                                 className={`p-2 rounded ${grid === btn.value
-                                    ? "bg-red-500 text-white"
-                                    : "bg-gray-200 hover:bg-gray-300"
-                                    }`}
+                                    ? "bg-red-800 text-white"
+                                    : " text-black hover:bg-gray-400"}`}
                             >
                                 <Icon size={18} />
                             </button>

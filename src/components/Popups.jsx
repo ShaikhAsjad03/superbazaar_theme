@@ -21,7 +21,7 @@ const Popups = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getPopups();
-      const active = data.filter((p) => p.isActive);
+      const active =data && data?.filter((p) => p.isActive);
 
       const filtered = active.filter((popup) => {
         const closedData = localStorage.getItem(`popup_closed_${popup.id}`);
@@ -76,7 +76,7 @@ const Popups = () => {
       `popup_closed_${id}`,
       JSON.stringify({ closedAt: Date.now(), cooldownStr })
     );
-    setVisiblePopups((prev) => prev.filter((p) => p.id !== id));
+    setVisiblePopups((prev) => prev?.filter((p) => p.id !== id));
   };
 
   const getPositionClasses = (position) => {
@@ -98,7 +98,7 @@ const Popups = () => {
 
   return (
     <>
-      {visiblePopups.map((popup) => (
+      {visiblePopups && visiblePopups?.map((popup) => (
         <div key={popup.id} className="fixed inset-0 z-50">
 
           <div

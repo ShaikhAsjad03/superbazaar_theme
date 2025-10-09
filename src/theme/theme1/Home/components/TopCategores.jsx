@@ -9,16 +9,16 @@ import { ImageUrl } from "@/helper/imageUrl"
 import { getCategorySlider } from "@/services/homeService"
 import { useEffect, useState } from "react"
 
-const Topcategories = ({purchaseType }) => {
-    const [data,setData]=useState([])
-     const fetchdata=async()=>{
-     const data= await getCategorySlider()
-     setData(data)
-     }
-  
-     useEffect(()=>{
-      fetchdata()
-     },[])
+const Topcategories = ({ purchaseType }) => {
+  const [data, setData] = useState([])
+  const fetchdata = async () => {
+    const data = await getCategorySlider()
+    setData(data)
+  }
+
+  useEffect(() => {
+    fetchdata()
+  }, [])
   return (
     <div
       className="mx-auto px-5 mt-10 w-full
@@ -29,10 +29,10 @@ const Topcategories = ({purchaseType }) => {
       2xl:max-w-[1320px]"
     >
       {data && data.length > 0 && (
-  <h1 className="text-xl sm:text-2xl md:text-2xl text-center mb-6 text-zinc-900">
-    Shop by Categories
-  </h1>
-)}
+        <h1 className="text-xl sm:text-2xl md:text-2xl text-center mb-6 text-zinc-900">
+          Shop by Categories
+        </h1>
+      )}
 
 
       <Swiper
@@ -51,22 +51,31 @@ const Topcategories = ({purchaseType }) => {
         {data &&
           data.length > 0 &&
           data.map((item, index) => (
-            <SwiperSlide key={index} className="flex justify-center">
-              <Link href={purchaseType === "wholesale" ? `/wholesale/${item.url}` : `/retail/${item.url}`
-              } className="block group">
-                <div className="relative w-full max-w-[120px] aspect-square">
-                  <Image
-                    src={ImageUrl(item.image)}
-                    alt={`Category ${item.name}`}
-                    fill
-                    className="rounded-xl border border-gray-200 shadow-md object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <p className="mt-2 text-center text-xs sm:text-sm md:text-base font-medium text-zinc-950 group-hover:text-gray-700 transition-colors break-words">
-                  {item?.name}
-                </p>
-              </Link>
-            </SwiperSlide>
+          <SwiperSlide key={index} className="flex justify-center">
+  <Link
+    href={
+      purchaseType === "wholesale"
+        ? `/wholesale/${item.menus?.[0]?.url}`
+        : `/retail/${item.menus?.[0]?.url}`
+    }
+    className="block group  overflow-hidden 
+               w-[80px] sm:w-[90px] md:w-[110px] lg:w-[130px]" 
+   
+  >
+    <div className="relative w-full aspect-square">
+      <Image
+        src={ImageUrl(item.image)}
+        alt={`Category ${item.name}`}
+        fill
+        className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+      />
+    </div>
+    <p className="mt-2 text-center text-xs sm:text-sm md:text-base font-medium text-zinc-950 group-hover:text-gray-700 transition-colors break-words">
+      {item?.name}
+    </p>
+  </Link>
+</SwiperSlide>
+
           ))}
       </Swiper>
     </div>

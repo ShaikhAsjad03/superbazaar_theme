@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setSelectedCurrency, loadSelectedCurrency } from "@/store/slice/CurrencySlice";
 const CurrencyComponent = ({ currencyData }) => {
+
     const dispatch = useDispatch();
     const { selected } = useSelector((state) => state.currency);
     const [open, setOpen] = useState(false);
@@ -24,7 +25,6 @@ const CurrencyComponent = ({ currencyData }) => {
         dispatch(setSelectedCurrency(cur));
         setOpen(false);
     };
-
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

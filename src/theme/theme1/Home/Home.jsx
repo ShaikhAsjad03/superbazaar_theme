@@ -25,8 +25,8 @@ export default async function Home() {
 
   const contentWithProducts = await Promise.all(
     homeContentArray.map(async (item) => {
-      if (item.type === "product" && item.category?.url) {
-        const productsData = await getHomeProductlist(item.category.url, webSetting?.purchaseType);
+      if (item.type === "product" && item.category?.id) {
+        const productsData = await getHomeProductlist(item.category.id, webSetting?.purchaseType);
         return { ...item, products: productsData };
       }
       return item;
@@ -54,6 +54,7 @@ export default async function Home() {
          fullSetProducts={item.products?.catalogue}
           purchaseType={webSetting?.purchaseType}
           url={item?.products?.url}
+          title={item.title}
         />;
       default:
         return null;

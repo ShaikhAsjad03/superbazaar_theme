@@ -25,48 +25,67 @@ const MobileMenu = ({ data, closeMenu, webSetting }) => {
         })
     }
 
+    const getMenuLink = (item) => {
+        if (!item) return "#";
+
+        if (item.type === "CATEGORY") {
+            return webSetting?.purchaseType === "wholesale"
+                ? `/wholesale/${item.url}`
+                : `/retail/${item.url}`;
+        }
+
+        if (item.type === "CUSTOM" || item.type === "STATIC") {
+            return `/${item.url}`;
+        }
+
+        if (item.type === "BRAND") {
+            return `/brand/${item.url || item.label.toLowerCase()}`;
+        }
+
+        if (item.url === "wholesale") return "/wholesale";
+
+        return `/${item.url}`;
+    };
+
+
     const renderSubMenu = (parentId, items) => (
         <ul className="pl-4 mt-2 space-y-2">
-            {items.map((item) => (
-                <li key={item.id} className="pt-[15px] pr-[45px] pb-[0px] pl-[15px]">
-                    <div className="flex justify-between items-center">
-                        <Link
-                            href={
-                                item.url === "wholesale"
-                                    ? "/wholesale"
-                                    : webSetting?.purchaseType === "wholesale"
-                                        ? `/wholesale/${item.url}`
-                                        : `/retail/${item.url}`
-                            }
-                            className="block text-gray-600 hover:text-red-700 text-sm"
-                            onClick={closeMenu}
-                        >
-                            {item.name || item.title}
-                        </Link>
-                        {item.children?.length > 0 && (
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    toggleMenu(parentId, item.id)
-                                }}
-                                className="ml-2 text-gray-700"
+            {items.map((item) => {
+                return (
+                    <li key={item.id} className="pt-[15px] pr-[45px] pb-[0px] pl-[15px]">
+                        <div className="flex justify-between items-center">
+                            <Link
+                                href={getMenuLink(item)}
+                                className="block text-gray-600 hover:text-red-700 text-sm"
+                                onClick={closeMenu}
                             >
-                                {openMenus[parentId]?.[item.id] ? (
-                                    <Minus size={14} />
-                                ) : (
-                                    <Plus size={14} />
-                                )}
-                            </button>
-                        )}
-                    </div>
-                    {item.children?.length > 0 && openMenus[parentId]?.[item.id] && renderSubMenu(parentId, item.children)}
-                </li>
-            ))}
+                                {item.label}
+                            </Link>
+                            {item.children?.length > 0 && (
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        toggleMenu(parentId, item.id)
+                                    }}
+                                    className="ml-2 text-gray-700"
+                                >
+                                    {openMenus[parentId]?.[item.id] ? (
+                                        <Minus size={14} />
+                                    ) : (
+                                        <Plus size={14} />
+                                    )}
+                                </button>
+                            )}
+                        </div>
+                        {item.children?.length > 0 && openMenus[parentId]?.[item.id] && renderSubMenu(parentId, item.children)}
+                    </li>
+                )
+            })}
         </ul>
     )
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex" onClick={closeMenu}>
+        <div className="fixed inset-0  bg-opacity-50 z-50 flex" onClick={closeMenu}>
             <div
                 className="w-72 bg-white h-full shadow-lg overflow-y-auto border-b"
                 onClick={(e) => e.stopPropagation()}
@@ -91,7 +110,7 @@ const MobileMenu = ({ data, closeMenu, webSetting }) => {
 
                 <ul className="space-y-2">
                     {data.map((item) => {
-                        const subCategories = item.children?.[0]?.children || []
+                        const subCategories = item.children || []
 
                         return (
                             <li
@@ -100,17 +119,11 @@ const MobileMenu = ({ data, closeMenu, webSetting }) => {
                             >
                                 <div className="flex justify-between items-center">
                                     <Link
-                                        href={
-                                            item.url === "wholesale"
-                                                ? "/wholesale"
-                                                : webSetting?.purchaseType === "wholesale"
-                                                    ? `/wholesale/${item.url}`
-                                                    : `/retail/${item.url}`
-                                        }
+                                        href={getMenuLink(item)}
                                         className="block flex-1 text-gray-800 hover:text-red-800 font-medium"
                                         onClick={closeMenu}
                                     >
-                                        {item.name}
+                                        {item.label}
                                     </Link>
 
                                     {subCategories.length > 0 && (

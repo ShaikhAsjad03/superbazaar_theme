@@ -1,12 +1,10 @@
 "use client";
-import { Facebook, Twitter, MessageCircle, Copy, Check, X } from "lucide-react"; 
+import { Facebook, Twitter, Copy, Check, X } from "lucide-react";
 import { useState } from "react";
 
-const SharePopup = ({ isOpen, onClose, url,  CopyUrl }) => {
+const SharePopup = ({ isOpen, onClose, url, name, CopyUrl }) => {
   const [copied, setCopied] = useState(false);
-
   if (!isOpen) return null;
-
 
   const handleFacebookShare = () => {
     const shareUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/public/shareproduct/${url}`;
@@ -18,14 +16,14 @@ const SharePopup = ({ isOpen, onClose, url,  CopyUrl }) => {
 
   const handleTwitterShare = () => {
     const shareUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/api/public/shareproduct/${url}`;
-    const tweet = encodeURIComponent(`${shareUrl}`);
+    const tweet = encodeURIComponent(`${name} ${shareUrl}`);
     window.open(`https://twitter.com/intent/tweet?text=${tweet}`, "_blank");
   };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_DOMAIN}${CopyUrl}`);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); 
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -56,13 +54,13 @@ const SharePopup = ({ isOpen, onClose, url,  CopyUrl }) => {
         <div className="flex gap-4 mt-4">
           <button
             onClick={handleFacebookShare}
-            className="text-blue-600 hover:text-blue-800 transition"
+            className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md hover:scale-105 transition"
           >
             <Facebook size={22} />
           </button>
           <button
             onClick={handleTwitterShare}
-            className="text-sky-500 hover:text-sky-700 transition"
+            className="p-3 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-md hover:scale-105 transition"
           >
             <Twitter size={22} />
           </button>

@@ -12,11 +12,14 @@ import StitchingOptions from "@/components/StitchingOption";
 import Link from "next/link";
 import Label from "@/components/Label";
 import { useRouter } from "next/navigation";
-const MiniCart = () => {
+import { convertPrice } from "@/helper/convertPrice";
+const MiniCart = ({ webSetting }) => {
   const router = useRouter()
   const dispatch = useDispatch();
   const isCartOpen = useSelector((state) => state.minicart.isCartOpen);
   const { CartData } = useSelector((state) => state.cartItem);
+  const { list, selected } = useSelector((state) => state.currency);
+    const currencyData = list?.find((c) => c.code === selected?.code);
   const [cartItems, setCartItemsState] = useState([]);
   const [openCatalogueIds, setOpenCatalogueIds] = useState([]);
   const [error, setError] = useState(null)
@@ -30,28 +33,93 @@ const MiniCart = () => {
     setCartItemsState(CartData || []);
   }, [CartData]);
 
-
   const toggleCatalogue = (id) => {
     setOpenCatalogueIds((prev) =>
       prev.includes(id) ? prev.filter((cid) => cid !== id) : [...prev, id]
     );
   };
 
-
   const handleCheckout = () => {
     if (!CartData?.data || CartData.data.length === 0) {
-      setError("Your cart is empty");
+      setError("Your cart is empty.");
       return;
     }
 
-    const outOfStock = cartItems?.data?.filter((item) => item.outOfStock);
+    const outOfStock = CartData?.data?.filter((item) => item.outOfStock);
     if (outOfStock && outOfStock.length > 0) {
-      setError("Remove out of Stock Product");
+      setError("Remove out-of-stock products before checkout.");
       return;
     }
+
+    const { valid, message } = validateCheckout();
+
+    if (!valid) {
+      setError(message || "You cannot proceed to checkout.");
+      return;
+    }
+
+    dispatch(closeCart())
     setError(null);
-    dispatch(closeCart());
-    router.push("/checkout")
+    router.push("/checkout");
+  };
+
+  const validateCheckout = () => {
+    if (!CartData || !CartData.data?.length) {
+      return { valid: false, message: "Cart is empty." };
+    }
+
+    const purchaseType = webSetting?.purchaseType || "retail";
+    const totalOrder = CartData?.totalOrder || 0;
+
+    const catalogueItems = CartData.data.filter((item) => item.isCatalogue);
+    const selectionItems = CartData.data.filter((item) => !item.isCatalogue);
+
+    const hasCatalogue = catalogueItems.length > 0;
+    const totalCatalogueCount = catalogueItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    const totalSelectionCount = selectionItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+    if (purchaseType === "wholesale") {
+      const { countEnable, count, priceEnabled, totalPrice } = webSetting?.wholeSaleCheckout || {};
+
+      if (countEnable && totalCatalogueCount < count) {
+        return {
+          valid: false,
+          message: `Minimum ${count} catalogues required to checkout.`,
+        };
+      }
+
+      if (priceEnabled && totalOrder < totalPrice) {
+        return {
+          valid: false,
+           message: `Minimum total amount ${convertPrice(totalPrice, currencyData)} required to checkout.`,
+        };
+      }
+
+      return { valid: true, message: "" };
+    }
+
+    const { countEnable, count, priceEnabled, totalPrice, bypassIfCatalogueExists } =
+      webSetting?.semiWholeSaleCheckout || {};
+
+    if (bypassIfCatalogueExists && hasCatalogue) {
+      return { valid: true, message: "" };
+    }
+
+    if (countEnable && totalSelectionCount < count) {
+      return {
+        valid: false,
+        message: `Minimum ${count} products required to checkout.`,
+      };
+    }
+
+    if (priceEnabled && totalOrder < totalPrice) {
+      return {
+        valid: false,
+           message: `Minimum total amount ${convertPrice(totalPrice, currencyData)} required to checkout.`,
+      };
+    }
+
+    return { valid: true, message: "" };
   };
 
   return (
@@ -77,6 +145,17 @@ const MiniCart = () => {
             <X size={25} />
           </button>
         </div>
+        {error && (
+          <div className="bg-red-200 border border-dashed border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 flex items-start justify-between mx-2" role="alert">
+            <div>
+              <strong className="font-normal">Error: </strong>
+              <span className="block sm:inline">{error}</span>
+            </div>
+            <button onClick={() => setError(null)} className="ml-4">
+              <X className="w-5 h-5 text-black" />
+            </button>
+          </div>
+        )}
         <div className="m-5">
           <FreeShippingProgress
             currentAmount={100}
@@ -84,44 +163,44 @@ const MiniCart = () => {
             isModalOpen={isCartOpen}
           />
         </div>
-        {error && (
-          <div className="bg-red-200 border border-dotted border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 flex items-start justify-between" role="alert">
-            <div>
-              <strong className="font-medium">Error: </strong>
-              <span className="block sm:inline">{error}</span>
-            </div>
-            <button onClick={() => setError(null)} className="ml-4">
-              <X className="w-5 h-5 text-white" />
-            </button>
-          </div>
-        )}
+
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {cartItems?.data?.length === 0 && <p className="text-center font-bold">Your cart is empty.</p>}
           {cartItems?.data?.map((item) => {
             const size = item?.size ? JSON.parse(item.size) : null;
             const isLoading = loadingIds.includes(item.id);
+            const basePath = item.isCatalogue ? "catalogue" : "retail";
+            const url = `/${basePath}/${item?.category?.url}/${item?.url}`
+
             return (
               <div key={item.id} className="p-3 border-b-1 border-gray-300">
                 <div className="flex justify-between items-start">
                   <div className="flex gap-3">
                     <div className="relative">
                       {item?.outOfStock && <Label text={"Out of stock"} danger={item?.outOfStock} />}
-                      <Image
-                        src={ImageUrl(item.image)}
-                        alt={item.name}
-                        height={300}
-                        width={300}
-                        className="w-20 h-30  rounded-md"
-                      />
+                      <Link href={url}>
+                        <Image
+                          src={ImageUrl(item.image)}
+                          alt={item.name}
+                          height={300}
+                          width={300}
+                          className="w-20 h-30  rounded-md"
+                        />
+
+                      </Link>
 
                     </div>
                     <div>
-                      <h3 className="font-medium text-sm">{item.name}</h3>
+                      <Link href={url}
+                        className="block font-medium text-sm text-gray-800 hover:text-red-600  transition"
+                      >
+                        {item.name}
+                      </Link>
+
                       <p className="text-sm">₹{item.price}</p>
 
                       {size?.value && <p className="block">Size: {size?.value}</p>}
-
-                      <StitchingOptions stitching={item.stitching} />
+                      <StitchingOptions stitching={item.stitching} isCatalogue={item.isCatalogue} />
                       <div className="flex items-center border border-gray-400 rounded-md overflow-hidden w-20 mt-2">
                         <button
                           disabled={item.quantity <= 1 || isLoading}

@@ -6,7 +6,7 @@ import CartLoading from "./components/CartLoading";
 import EmptyCart from "./components/EmptyCart";
 import CartItems from "./CartItems";
 
-const CartPageTheme1 = () => {
+const CartPageTheme1 = ({ webSetting }) => {
   const { CartData } = useSelector((state) => state.cartItem);
   const [cartItems, setCartItemsState] = useState([]);
   useEffect(() => {
@@ -14,7 +14,7 @@ const CartPageTheme1 = () => {
   }, [CartData]);
   return (
     <div className="w-full">
-        <div className="w-full h-[200px] flex justify-center items-center bg-gradient-to-r from-indigo-100 via-white to-indigo-100">
+      <div className="w-full h-[200px] flex justify-center items-center bg-gradient-to-r from-indigo-100 via-white to-indigo-100">
         <h1 className="text-4xl font-medium">Shopping Cart</h1>
       </div>
       {Object.keys(CartData)?.length === 0 ? (
@@ -23,7 +23,7 @@ const CartPageTheme1 = () => {
         <EmptyCart />
       ) : (
         <CartItems
-          CartData={cartItems}
+          CartData={cartItems} webSetting={webSetting}
         />
       )}
     </div>

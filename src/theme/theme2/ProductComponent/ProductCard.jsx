@@ -1,16 +1,11 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
 import { ImageUrl } from "@/helper/imageUrl";
 import PriceConverter from "@/components/PriceConverter";
 import WishlistButton from "@/components/cards/attribute/WishlistButton";
 import shouldShowPrice from "@/helper/shouldShowPrice";
 import { useSession } from "next-auth/react";
-import { getWebSetting } from "@/services/webSetting";
-import { setWebSetting } from "@/store/slice/webSettingSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 
 const ProductCard = ({ product, pathname, webSetting }) => {
     if (!product) return null;
@@ -61,7 +56,7 @@ const ProductCard = ({ product, pathname, webSetting }) => {
                         </span>
                     </Link>
                 </div>
-                {shouldShowPrice(session?.accessToken, webSetting?.showPrice) ? (
+                {shouldShowPrice(session?.accessToken, webSetting) ? (
                     <div className="product-price flex justify-between items-center gap-2">
                         <span className="price text-red-600 font-bold text-xs">
                             <PriceConverter price={product?.offer_price} />
@@ -74,6 +69,20 @@ const ProductCard = ({ product, pathname, webSetting }) => {
                         Login To View Price
                     </Link>
                 )}
+
+                {/* {shouldShowPrice(session?.accessToken, webSetting?.showPrice) ? (
+                    <div className="product-price flex justify-between items-center gap-2">
+                        <span className="price text-red-600 font-bold text-xs">
+                            <PriceConverter price={product?.offer_price} />
+                        </span>
+                    </div>
+                ) : (
+                    <Link href="/login"
+                        className="text-red-600 font-bold text-center text-xs cursor-pointer"
+                    >
+                        Login To View Price
+                    </Link>
+                )} */}
             </div>
         </div>
     );

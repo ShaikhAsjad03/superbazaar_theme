@@ -15,7 +15,7 @@ const ThreeFourBanner = ({ data, bannergrid = 4, htmlContent,fullScreen }) => {
           {data?.map((item, index) => (
             <div
               key={index}
-              className="w-full rounded-lg overflow-hidden  hover:scale-105 transition-transform"
+              className="w-full rounded-lg overflow-hidden hover:scale-105 transition-transform"
             >
               <Image
                 src={ImageUrl(item?.image)}

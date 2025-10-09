@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation"
 import { getRelatedCatalogue } from "@/services/catalogueService"
 import CatalogueCard from "@/components/cards/CatalogueCard"
 const RalatedCatalogue = ({ url }) => {
+ 
    const pathname = usePathname();
   const [catalogue, setCatalogue] = useState([])
   const fetchdata = async () => {
@@ -46,11 +47,11 @@ const RalatedCatalogue = ({ url }) => {
           640: { slidesPerView: 3 },
           768: { slidesPerView: 3 },
           1024: { slidesPerView: 3 },
-          1280: { slidesPerView: 4 },
+          1280: { slidesPerView: 5 },
         }}>
         {catalogue && catalogue?.length > 0 && catalogue?.map((data, index) => (
           <SwiperSlide key={index} className="flex justify-center h-10 " >
-            <CatalogueCard data={data} redirectUrl={pathname?.split("/")?.[2]}/>
+            <CatalogueCard data={data} redirectUrl={`${pathname?.split("/")?.[1]}/${pathname?.split("/")?.[2]}`}/>
           </SwiperSlide>
         ))}
       </Swiper>

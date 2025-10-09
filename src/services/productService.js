@@ -1,15 +1,15 @@
 import { createClientAxios, createServerAxios } from "./apiClient";
-export const getCategoryBanners = async (category) => {
+export const getPageBanners = async (url) => {
   try {
     const axiosInstance = await createClientAxios();
-    const res = await axiosInstance.get(`/public/page-banner/${category}`);
+    const res = await axiosInstance.get(`/public/page-banner/${url}`);
     return res.data?.data || {};
   } catch (error) {
     return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getCategoryProducts = async (
-  category,
+  url,
   pageNo = 1,
   perPage = 20,
   sortOption = "",
@@ -18,7 +18,7 @@ export const getCategoryProducts = async (
 ) => {
   try {
     const axiosInstance = isServer ? await createServerAxios() : createClientAxios();
-    const res = await axiosInstance.get(`/public/product/${category}`, {
+    const res = await axiosInstance.get(`/public/product/${url}`, {
       params: {
         perPage,
         pageNo,
@@ -33,10 +33,10 @@ export const getCategoryProducts = async (
     return { success: false, error: error?.response?.data || error.message };
   }
 };
-export const getCategoryFilter = async (category) => {
+export const getCategoryFilter = async (url) => {
   try {
     const axiosInstance = await createClientAxios();
-    const res = await axiosInstance.get(`/public/filter/${category}`);
+    const res = await axiosInstance.get(`/public/filter/${url}`);
     return res.data;
   } catch (error) {
     console.error("Error fetching category filter   :", error);
@@ -59,7 +59,7 @@ export const getProductStitching = async (url) => {
     return res.data;
   } catch (error) {
     console.error("Error fetching product stitching:", error);
-  return { success: false, error: error?.response?.data || error.message };
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getProductAttributes = async (url) => {
@@ -79,11 +79,11 @@ export const getRelatedProduct = async (url) => {
     return res.data;
   } catch (error) {
     console.error("Error fetching product detail:", error);
-   return { success: false, error: error?.response?.data || error.message };
+    return { success: false, error: error?.response?.data || error.message };
   }
 };
 export const getWholeSaleProductslists = async (
-  category,
+  url,
   pageNo = 1,
   perPage = 20,
   sortOption = "",
@@ -91,7 +91,7 @@ export const getWholeSaleProductslists = async (
 ) => {
   try {
     const axiosInstance = isServer ? await createServerAxios() : createClientAxios();
-    const res = await axiosInstance.get(`/public/catalogue/${category}`, {
+    const res = await axiosInstance.get(`/public/catalogue/${url}`, {
       params: {
         perPage,
         pageNo,

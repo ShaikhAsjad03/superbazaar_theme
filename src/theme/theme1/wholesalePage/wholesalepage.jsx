@@ -129,7 +129,7 @@ const WholeSalePage = () => {
                     [...Array(grid * 2)].map((_, i) => <ProductCardSkeleton key={i} />)
                 ) : data?.length > 0 ? (
                     data.map((item, index) => {
-                        const categoryUrl = item?.CatalogueCategory?.[0]?.category?.url ||
+                        const categoryUrl = item?.CatalogueCategory?.[0]?.category?.menus?.[0]?.url ||
                             null;
                         return (
                             <div key={index}>

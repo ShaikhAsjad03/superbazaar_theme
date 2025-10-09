@@ -22,7 +22,7 @@ export const getCatalogueStitching = async (url) => {
 export const getRelatedCatalogue = async (url) => {
   try {
     const axiosInstance = await createClientAxios();
-    const res = await axiosInstance.get(`/public/catalogue-realted/${url}`);
+    const res = await axiosInstance.get(`/public/catalogue-related/${url}`);
     return res.data;
   } catch (error) {
      return { success: false, error: error?.response?.data || error.message };

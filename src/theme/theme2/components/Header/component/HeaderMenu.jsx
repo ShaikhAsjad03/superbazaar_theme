@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { openCart } from "@/store/slice/MiniCartSlice";
 import HeaderSearch from "./HeaderSearch";
 import { setCategoyData } from "@/store/slice/categorySlice";
+import { setCurrencyData } from "@/store/slice/CurrencySlice";
 
 const HeaderMenu = ({ menudata, currencyData, webSetting }) => {
     const { data: session, } = useSession();
@@ -27,11 +28,13 @@ const HeaderMenu = ({ menudata, currencyData, webSetting }) => {
     const [openMenu, setOpenMenu] = useState(false)
     const router = useRouter();
     const userRef = useRef(null)
+    const dropdownRef = useRef(null);
     const [isSticky, setIsSticky] = useState(false);
     const dispatch = useDispatch();
     const [showSearch, setShowSearch] = useState(false);
     const { list } = useSelector((state) => state.wishlist);
     const cartData = useSelector((state) => state.cartItem.CartData.data);
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const handleCartClick = () => dispatch(openCart());
 
     const fetchProtectedData = async () => {
@@ -44,11 +47,11 @@ const HeaderMenu = ({ menudata, currencyData, webSetting }) => {
     };
 
     useEffect(() => {
-        if (session?.accessToken) {
-            fetchProtectedData()
+        if (session?.accessToken && token) {
+            fetchProtectedData();
         }
-        dispatch(setCategoyData(menudata))
-    }, [session])
+        dispatch(setCategoyData(menudata));
+    }, [session, token]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -67,6 +70,20 @@ const HeaderMenu = ({ menudata, currencyData, webSetting }) => {
         signOut({ redirect: false })
         router.push("/")
     }
+    const getMenuLink = (item) => {
+        if (item.type === "CATEGORY") {
+            return webSetting?.purchaseType === "wholesale"
+                ? `/wholesale/${item.url}`
+                : `/retail/${item.url}`;
+        }
+        if (item.type == "CUSTOM" || item.type == "STATIC") {
+            return item.url;
+        }
+
+        if (item.url === "wholesale") return "/wholesale";
+
+
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -77,6 +94,28 @@ const HeaderMenu = ({ menudata, currencyData, webSetting }) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    useEffect(() => {
+        dispatch(setCurrencyData(currencyData));
+
+        const handleResize = () => {
+            if (window.innerWidth >= 640) {
+                setMenuOpen(false);
+                setMobileSearchOpen(false);
+            }
+        };
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+        window.addEventListener("resize", handleResize);
+        document.addEventListener("pointerdown", handleClickOutside);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            document.removeEventListener("pointerdown", handleClickOutside);
+        };
+    }, [currencyData]);
 
     return (
         <>
@@ -192,52 +231,44 @@ const HeaderMenu = ({ menudata, currencyData, webSetting }) => {
                             {menudata.length > 0 && menudata.map((item) => (
                                 <div key={item.id} className="relative group">
                                     <Link
-                                        href={item.url === "wholesale" ? "/wholesale" : webSetting?.purchaseType === "wholesale" ? `/wholesale/${item.url}`
-                                            : `/retail/${item.url}`}
-                                        className="hover:text-red-800 flex items-center text-[17px] text-gray-700 tracking-normal"
+                                        href={getMenuLink(item)}
+                                        className="hover:text-red-800 flex items-center text-[17px] text-zinc-950 tracking-normal"
                                     >
-                                        {item.name}
+                                        {item.label}
                                     </Link>
 
                                     {item.children.length > 0 && (
                                         <div className="absolute left-0 top-full mt-2 w-56 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                             <ul className="flex flex-col p-3 space-y-2">
-                                                {item.children[0]?.children?.map((child) => (
-                                                    <li key={child.id}>
-                                                        <Link
-                                                            href={item.url === "wholesale"
-                                                                ? "/wholesale" : webSetting?.purchaseType === "wholesale"
-                                                                    ? `/wholesale/${child.url}`
-                                                                    : `/retail/${child.url}`}
-                                                            className="block hover:text-red-800"
-                                                        >
-                                                            {child.name}
-                                                        </Link>
-                                                    </li>
-                                                ))}
+                                                {item.children?.map((child) => {
+                                                    return (
+                                                        <li key={child.id}>
+                                                            <Link
+                                                                href={
+                                                                    child.type === "BRAND"
+                                                                        ? `/brand/${child.url || child.label.toLowerCase()}`
+                                                                        : webSetting?.purchaseType === "wholesale"
+                                                                            ? `/wholesale/${child.url || child.label.toLowerCase()}`
+                                                                            : `/retail/${child.url || child.label.toLowerCase()}`
+                                                                }
+                                                                className="block hover:text-red-800 text-zinc-950 "
+                                                            >
+                                                                {child.label}
+                                                            </Link>
+                                                        </li>
+                                                    )
+                                                })}
                                             </ul>
                                         </div>
                                     )}
                                 </div>
                             ))}
-
-                            {menudata && menudata.length > 0 &&
-                                <div>
-                                    <Link
-                                        href={webSetting?.purchaseType === "wholesale" ? `/brand` : `/brand`}
-                                        className="hover:text-red-800 flex items-center text-[17px] text-gray-700 tracking-normal"
-                                    >
-                                        Brand
-                                    </Link>
-                                </div>}
                         </nav>
                     </div>
                 </header>
 
                 {openMenu && (
-                    <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setOpenMenu(false)}>
-                        <MobileMenu webSetting={webSetting} data={data} closeMenu={() => setOpenMenu(false)} />
-                    </div>
+                    <MobileMenu webSetting={webSetting} data={menudata} closeMenu={() => setOpenMenu(false)} />
                 )}
             </header >
             <MobileNav handleCartClick={handleCartClick} list={list} />

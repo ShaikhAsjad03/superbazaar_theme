@@ -1,19 +1,19 @@
 "use client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useModal } from "@/hooks/useModal";
 import { useFormik } from "formik";
 import { signupSchema } from "@/schema/schema";
-import { Eye, EyeOff } from "lucide-react";
 import { createClientAxios } from "@/services/apiClient";
 import { signIn, useSession } from "next-auth/react";
 
 export default function SignupModal() {
-  const { data: session, } = useSession();
+  const { data: session } = useSession();
   const { modal, close, open } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errors, setErrors] = useState(null)
+  const [errors, setErrors] = useState(null);
+
   const initialValues = {
     name: "",
     email: "",
@@ -28,10 +28,10 @@ export default function SignupModal() {
     onSubmit: async (values) => {
       try {
         const axiosInstance = createClientAxios();
-        const response = await axiosInstance.post("auth/register", values)
+        const response = await axiosInstance.post("auth/register", values);
         if (response.status == 200) {
-          close("signup")
-          setErrors(null)
+          close("signup");
+          setErrors(null);
           const loginRes = await signIn("credentials", {
             redirect: false,
             email: values.email,
@@ -39,26 +39,29 @@ export default function SignupModal() {
           });
 
           if (loginRes?.error) {
-            setErrors(errors?.response?.data?.message || "Something went wrong")
+            setErrors(
+              errors?.response?.data?.message || "Something went wrong"
+            );
           } else {
-             const session = await fetch("/api/auth/session").then(r => r.json());
-        if (session?.accessToken) {
-          localStorage.setItem("token", session.accessToken);
-        }
+            const session = await fetch("/api/auth/session").then((r) =>
+              r.json()
+            );
+            if (session?.accessToken) {
+              localStorage.setItem("token", session.accessToken);
+            }
             close("signup");
           }
-
         }
       } catch (errors) {
-        setErrors(errors?.response?.data?.message || "Something went wrong")
-        return errors
+        setErrors(errors?.response?.data?.message || "Something went wrong");
+        return errors;
       }
     },
   });
 
   useEffect(() => {
     if (!modal.signup) {
-      setErrors(null)
+      setErrors(null);
       formik.resetForm();
       setShowPassword(false);
       setShowConfirmPassword(false);
@@ -75,7 +78,7 @@ export default function SignupModal() {
         onClick={() => close("signup")}
       ></div>
 
-      <div className="relative bg-white rounded-md shadow-lg w-full max-w-lg p-8 z-10">
+      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-8 z-10">
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-black"
           onClick={() => close("signup")}
@@ -83,8 +86,7 @@ export default function SignupModal() {
           ✕
         </button>
 
-        <h2 className="text-2xl font-normal mb-6 text-left">Sign Up</h2>
-
+        <h2 className="text-2xl font-semibold mb-6 text-center">Create Account</h2>
         <form className="space-y-6" onSubmit={formik.handleSubmit}>
           <div className="relative">
             <input
@@ -99,13 +101,11 @@ export default function SignupModal() {
             <label
               htmlFor="name"
               className="absolute left-3 text-gray-400 text-sm transition-all
-                         peer-placeholder-shown:top-4
-                         peer-placeholder-shown:text-gray-400
-                         peer-placeholder-shown:text-sm
-                         peer-focus:top-0
-                         peer-focus:text-zinc-500
-                         peer-focus:text-xs
-                         bg-white px-1"
+                peer-placeholder-shown:top-4
+                peer-focus:top-0
+                peer-focus:text-zinc-500
+                peer-focus:text-xs
+                bg-white px-1"
             >
               Name
             </label>
@@ -126,13 +126,11 @@ export default function SignupModal() {
             <label
               htmlFor="email"
               className="absolute left-3 text-gray-400 text-sm transition-all
-                         peer-placeholder-shown:top-4
-                         peer-placeholder-shown:text-gray-400
-                         peer-placeholder-shown:text-sm
-                         peer-focus:top-0
-                         peer-focus:text-zinc-500
-                         peer-focus:text-xs
-                         bg-white px-1"
+                peer-placeholder-shown:top-4
+                peer-focus:top-0
+                peer-focus:text-zinc-500
+                peer-focus:text-xs
+                bg-white px-1"
             >
               Email
             </label>
@@ -153,13 +151,11 @@ export default function SignupModal() {
             <label
               htmlFor="password"
               className="absolute left-3 text-gray-400 text-sm transition-all
-                         peer-placeholder-shown:top-4
-                         peer-placeholder-shown:text-gray-400
-                         peer-placeholder-shown:text-sm
-                         peer-focus:top-0
-                         peer-focus:text-zinc-500
-                         peer-focus:text-xs
-                         bg-white px-1"
+                peer-placeholder-shown:top-4
+                peer-focus:top-0
+                peer-focus:text-zinc-500
+                peer-focus:text-xs
+                bg-white px-1"
             >
               Password
             </label>
@@ -171,9 +167,12 @@ export default function SignupModal() {
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
             {formik.touched.password && formik.errors.password && (
-              <p className="text-xs text-red-500 mt-1">{formik.errors.password}</p>
+              <p className="text-xs text-red-500 mt-1">
+                {formik.errors.password}
+              </p>
             )}
           </div>
+
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
@@ -187,13 +186,11 @@ export default function SignupModal() {
             <label
               htmlFor="confirmPassword"
               className="absolute left-3 text-gray-400 text-sm transition-all
-                         peer-placeholder-shown:top-4
-                         peer-placeholder-shown:text-gray-400
-                         peer-placeholder-shown:text-sm
-                         peer-focus:top-0
-                         peer-focus:text-zinc-500
-                         peer-focus:text-xs
-                         bg-white px-1"
+                peer-placeholder-shown:top-4
+                peer-focus:top-0
+                peer-focus:text-zinc-500
+                peer-focus:text-xs
+                bg-white px-1"
             >
               Confirm Password
             </label>
@@ -204,10 +201,14 @@ export default function SignupModal() {
             >
               {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-            {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-              <p className="text-xs text-red-500 mt-1">{formik.errors.confirmPassword}</p>
-            )}
+            {formik.touched.confirmPassword &&
+              formik.errors.confirmPassword && (
+                <p className="text-xs text-red-500 mt-1">
+                  {formik.errors.confirmPassword}
+                </p>
+              )}
           </div>
+
           <div className="relative">
             <input
               type="text"
@@ -221,31 +222,35 @@ export default function SignupModal() {
             <label
               htmlFor="mobile_number"
               className="absolute left-3 text-gray-400 text-sm transition-all
-                         peer-placeholder-shown:top-4
-                         peer-placeholder-shown:text-gray-400
-                         peer-placeholder-shown:text-sm
-                         peer-focus:top-0
-                         peer-focus:text-zinc-500
-                         peer-focus:text-xs
-                         bg-white px-1"
+                peer-placeholder-shown:top-4
+                peer-focus:top-0
+                peer-focus:text-zinc-500
+                peer-focus:text-xs
+                bg-white px-1"
             >
               Mobile Number
             </label>
-            {formik.touched.mobile_number && formik.errors.mobile_number && (
-              <p className="text-xs text-red-500 mt-1">{formik.errors.mobile_number}</p>
-            )}
+            {formik.touched.mobile_number &&
+              formik.errors.mobile_number && (
+                <p className="text-xs text-red-500 mt-1">
+                  {formik.errors.mobile_number}
+                </p>
+              )}
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex flex-col gap-3">
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className={`w-full sm:w-auto flex-1 py-2 rounded-sm transition-colors duration-200 flex items-center justify-center gap-2
-    ${formik.isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-zinc-950 text-white hover:bg-zinc-700"}`}
+              className={`w-full py-2 rounded-md transition-colors duration-200 flex items-center justify-center gap-2
+              ${formik.isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-zinc-950 text-white hover:bg-zinc-700"
+                }`}
             >
               {formik.isSubmitting ? (
                 <>
-                  <Loader2 className=" animate-spin" />
+                  <Loader2 className="animate-spin" />
                   <span>Processing...</span>
                 </>
               ) : (
@@ -253,24 +258,35 @@ export default function SignupModal() {
               )}
             </button>
 
-            {!session?.accessToken && (
-              <p className="text-sm text-gray-600 text-center sm:text-left">
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => {
-                    close("signup");
-                    open("login");
-                  }}
-                  className="text-blue-600 font-medium hover:underline"
-                >
-                  Login
-                </button>
-              </p>
-
-            )}
+            <button
+              type="button"
+              onClick={() => {
+                close("signup");
+                open("signupwholesale");
+              }}
+              className="w-full py-2 rounded-md transition-colors duration-200 bg-green-600 text-white hover:bg-green-700"
+            >
+              Sign Up Wholesale
+            </button>
           </div>
-          {errors && <p className="text-red-400 text-sm">{errors}</p>}
+
+          {!session?.accessToken && (
+            <p className="text-sm text-gray-600 text-center mt-4">
+              Already have an account?{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  close("signup");
+                  open("login");
+                }}
+                className="text-blue-600 font-medium hover:underline"
+              >
+                Login
+              </button>
+            </p>
+          )}
+
+          {errors && <p className="text-red-400 text-sm mt-2">{errors}</p>}
         </form>
       </div>
     </div>

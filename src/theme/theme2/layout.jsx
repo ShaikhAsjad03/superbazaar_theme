@@ -20,7 +20,7 @@ const LayoutTheme2 = async ({ children }) => {
             <main>{children}</main>
 
             <FooterLayout webSetting={webSetting} />
-            <MiniCart />
+            <MiniCart webSetting={webSetting} />
         </div>
     )
 }

@@ -91,3 +91,19 @@ export const ContactSchema = Yup.object().shape({
     .min(10, "Message must be at least 10 characters")
     .required("Message is required"),
 });
+
+export const signupWholesaleSchema = Yup.object({
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid Email").required("Email is required"),
+  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Confirm password is required"),
+  mobile_number: Yup.string().required("Mobile number is required"),
+  country: Yup.string().required("Country is required"),
+  state: Yup.string().required("State is required"),
+  city: Yup.string().required("City is required"),
+  pincode: Yup.string().required("Pincode is required"),
+  businessDetail: Yup.string().required("Business detail is required"),
+  GSTNumber: Yup.string().required("GST number is required"),
+});

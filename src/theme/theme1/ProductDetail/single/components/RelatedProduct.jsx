@@ -47,7 +47,7 @@ const RalatedProduct = ({ url }) => {
               640: { slidesPerView: 3 },
               768: { slidesPerView: 3 },
               1024: { slidesPerView: 3 },
-              1280: { slidesPerView: 4 },
+              1280: { slidesPerView: 5 },
             }}>
             {ProductData && ProductData?.length > 0 && ProductData?.map((product, index) => (
               <SwiperSlide key={index} className="flex justify-center h:md-100 " style={{ width: '320px' }} >

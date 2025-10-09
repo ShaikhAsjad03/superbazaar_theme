@@ -4,8 +4,9 @@ import { getWholeSaleProductslists } from "@/services/productService";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import CatalogCard from "./component/CatalogCard";
 import ProductViewTabs from "../../components/common/ProductViewTabs";
-import ProductListToolbar from "../../components/common/ProductListToolbar";
+
 import Pagination from "@/components/Pagination";
+import ProductListToolbar from "../../components/common/ProductListToolbar";
 
 const WholesaleProduct = ({ category, title }) => {
     const [grid, setGrid] = useState(4);

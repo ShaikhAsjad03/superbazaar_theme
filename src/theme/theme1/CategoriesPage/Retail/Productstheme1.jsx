@@ -8,7 +8,8 @@ import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import cleanFilters from "@/helper/FilterClean";
 import { useSelector } from "react-redux";
 import CatalogueCard from "@/components/cards/CatalogueCard";
-
+import FilterSidebar from "./FilterSidebar";
+import { getPageContent } from "@/services/pageService";
 const Filtertheme1 = dynamic(() => import("./Filtertheme1"));
 const ProductCard = dynamic(() => import("@/components/cards/ProductCards"));
 const Pagination = dynamic(() => import("@/components/Pagination"));
@@ -18,7 +19,6 @@ const Productstheme1 = ({ category }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { webSetting } = useSelector((state) => state.webSetting);
-
   const [grid, setGrid] = useState(4);
   const [open, setOpen] = useState(false);
   const [sort, setSort] = useState("");
@@ -28,9 +28,14 @@ const Productstheme1 = ({ category }) => {
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [loading, setLoading] = useState(true);
   const [filterData, setFilterData] = useState([]);
-  const [purchaseType, setPurchaseType] = useState("retail"); 
+  const [purchaseType, setPurchaseType] = useState("retail");
   const productSectionRef = useRef(null);
-
+  const [openSections, setOpenSections] = useState({});
+  const [priceRange, setPriceRange] = useState([0, 0]);
+  const [appliedPrice, setAppliedPrice] = useState([null, null]);
+  const [pageData, setPageData] = useState([])
+  const toggleSection = (key) =>
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   const fetchProducts = async (filters = {}) => {
     setLoading(true);
     try {
@@ -48,6 +53,8 @@ const Productstheme1 = ({ category }) => {
   useEffect(() => {
     const fetchFilter = async () => {
       const res = await getCategoryFilter(category);
+      const pageData = await getPageContent(category)
+      setPageData(pageData)
       setFilterData(res.data || []);
     };
     fetchFilter();
@@ -63,7 +70,7 @@ const Productstheme1 = ({ category }) => {
     productSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
- 
+
   const handlePurchaseChange = (type) => {
     if (type === "wholesale") router.push(`/wholesale/${category}`);
     else router.push(`/retail/${category}`);
@@ -90,9 +97,9 @@ const Productstheme1 = ({ category }) => {
         sm:max-w-[540px] 
         md:max-w-[720px] 
         lg:max-w-[960px] 
-        xl:max-w-[1240px] 
-        2xl:max-w-[1320px]">     
-           <div className="flex justify-center mb-6 md:hidden">
+        xl:max-w-[1280px] 
+        2xl:max-w-[1380px]">
+        <div className="flex justify-center mb-6 md:hidden">
           <div className="inline-flex border border-zinc-300 bg-white shadow-md rounded-full overflow-hidden">
             <label
               className={`text-zinc-700 hover:bg-zinc-100 flex items-center gap-2 px-6 py-2 text-sm font-semibold cursor-pointer transition-all duration-300
@@ -131,57 +138,53 @@ const Productstheme1 = ({ category }) => {
             </label>
           </div>
         </div>
-
         <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
           <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-2 px-3 py-1 border rounded-sm shadow-sm hover:shadow-md hover:bg-gray-100 transition-all duration-200 text-sm font-medium"
+            className="flex lg:hidden items-center gap-2 px-3 py-1 border rounded-sm shadow-sm hover:shadow-md hover:bg-gray-100 transition-all duration-200 text-sm font-medium"
           >
             <SlidersHorizontal size={18} />
             Filter
           </button>
-
-
           <div className="hidden md:flex justify-center">
-          <div className="inline-flex border border-zinc-300 bg-white shadow-md rounded-full overflow-hidden">
-            <label
-              className={`text-zinc-700 hover:bg-zinc-100 flex items-center gap-2 px-6 py-2 text-sm font-semibold cursor-pointer transition-all duration-300
+            <div className="inline-flex border border-zinc-300 bg-white shadow-md rounded-full overflow-hidden">
+              <label
+                className={`text-zinc-700 hover:bg-zinc-100 flex items-center gap-2 px-6 py-2 text-sm font-semibold cursor-pointer transition-all duration-300
                 `}
-            >
-              <input
-                type="radio"
-                name="purchaseType"
-                value="wholesale"
-                checked={false}
-                onChange={() => handlePurchaseChange("wholesale")}
-                className="hidden"
-              />
-              <span
-                className={`inline-block w-3 h-3 rounded-full border border-zinc-400 bg-white `}
-              ></span>
-              Wholesale
-            </label>
+              >
+                <input
+                  type="radio"
+                  name="purchaseType"
+                  value="wholesale"
+                  checked={false}
+                  onChange={() => handlePurchaseChange("wholesale")}
+                  className="hidden"
+                />
+                <span
+                  className={`inline-block w-3 h-3 rounded-full border border-zinc-400 bg-white `}
+                ></span>
+                Wholesale
+              </label>
 
-            <label
-              className={`bg-black text-white shadow flex items-center gap-2 px-6 py-2 text-sm font-semibold cursor-pointer transition-all duration-300
+              <label
+                className={`bg-black text-white shadow flex items-center gap-2 px-6 py-2 text-sm font-semibold cursor-pointer transition-all duration-300
                 `}
-            >
-              <input
-                type="radio"
-                name="purchaseType"
-                value="retail"
-                checked={purchaseType === "retail"}
-                onChange={() => handlePurchaseChange("retail")}
-                className="hidden"
-              />
-              <span
-                className={`inline-block w-3 h-3 rounded-full border border-zinc-400 bg-white `}
-              ></span>
-              Retail
-            </label>
+              >
+                <input
+                  type="radio"
+                  name="purchaseType"
+                  value="retail"
+                  checked={purchaseType === "retail"}
+                  onChange={() => handlePurchaseChange("retail")}
+                  className="hidden"
+                />
+                <span
+                  className={`inline-block w-3 h-3 rounded-full border border-zinc-400 bg-white `}
+                ></span>
+                Retail
+              </label>
+            </div>
           </div>
-        </div>
-          
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2 bg-gray-50 p-2 rounded-lg shadow-sm">
               {gridButtons.map((btn) => {
@@ -192,11 +195,10 @@ const Productstheme1 = ({ category }) => {
                     key={btn.value}
                     onClick={() => setGrid(btn.value)}
                     title={btn.label}
-                    className={`p-1 rounded transition-all ${
-                      isActive
-                        ? "bg-zinc-900 text-white shadow-md"
-                        : "text-zinc-900 hover:bg-blue-100"
-                    }`}
+                    className={`p-1 rounded transition-all ${isActive
+                      ? "bg-zinc-900 text-white shadow-md"
+                      : "text-zinc-900 hover:bg-blue-100"
+                      }`}
                   >
                     <Icon size={20} />
                   </button>
@@ -216,63 +218,81 @@ const Productstheme1 = ({ category }) => {
             </select>
           </div>
         </div>
-
         <hr className="my-4 border-zinc-300" />
-        <SelectedFilters
-          selectedAttributes={selectedAttributes}
-          onFiltersChange={handleApplyFilters}
-          setSelectedAttributes={setSelectedAttributes}
-          fetchProducts={fetchProducts}
-        />
-        <div
-          className={`grid gap-4 
-            ${grid === 4 ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : ""} 
-            ${grid === 5 ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5" : ""}`}
-        >
-          {loading ? (
-            [...Array(grid * 2)].map((_, i) => <ProductCardSkeleton key={i} />)
-          ) : Array.isArray(products) && products.length > 0 ? (
-            products.map((item, index) => (
-              <div key={index}>
-                {webSetting?.purchaseType === "retail" ? (
-                  <ProductCard data={item} grid={grid} />
-                ) : (
-                  <CatalogueCard
-                    data={item}
-                    grid={grid}
-                    redirectUrl={`catalogue/${pathname?.split("/")?.[3]}`}
-                  />
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-500">
-              No products found.
-            </p>
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 ">
+          <aside className="hidden lg:block md:col-span-3 md:sticky md:top-[50px] self-start">
+            <FilterSidebar
+              filterData={filterData}
+              onApply={handleApplyFilters}
+              setSelectedAttributes={setSelectedAttributes}
+              selectedAttributes={selectedAttributes}
+              openSections={openSections}
+              toggleSection={toggleSection}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              appliedPrice={appliedPrice}
+              setAppliedPrice={setAppliedPrice}
+              setOpenSections={setOpenSections}
+            />
+          </aside>
+          <main className="col-span-1 md:col-span-9">
+            <SelectedFilters
+              selectedAttributes={selectedAttributes}
+              onFiltersChange={handleApplyFilters}
+              setSelectedAttributes={setSelectedAttributes}
+              fetchProducts={fetchProducts}
+            />
+            <div className={`grid gap-4 
+    ${grid === 4 ? "grid-cols-2 sm:grid-cols-3" : ""} 
+    ${grid === 5 ? "grid-cols-2 sm:grid-cols-5" : ""}`}>
+              {loading ? (
+                [...Array(grid * 2)].map((_, i) => <ProductCardSkeleton key={i} />)
+              ) : Array.isArray(products) && products.length > 0 ? (
+                products.map((item, index) => (
+                  <div key={index}>
+                    <ProductCard data={item} grid={grid} />
+                  </div>
+                ))
+              ) : (
+                <p className="col-span-full text-center text-gray-500">
+                  No products found.
+                </p>
+              )}
+            </div>
+            <div className="flex justify-center items-center mt-6">
+              <Pagination
+                currentPage={page}
+                totalCount={totalCount}
+                perPage={20}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </main>
         </div>
-
-        {/* Pagination */}
-        <div className="flex justify-center items-center mt-6">
-          <Pagination
-            currentPage={page}
-            totalCount={totalCount}
-            perPage={20}
-            onPageChange={handlePageChange}
+        {Array.isArray(pageData) && pageData.length > 0 && pageData.map((item, i) => (
+          <div
+            key={i}
+            className="prose max-w-none mb-6"
+            dangerouslySetInnerHTML={{ __html: item.htmlContent }}
           />
-        </div>
+        ))}
+
       </div>
 
-    
-      <Filtertheme1
-        open={open}
-        category={category}
-        setOpen={setOpen}
-        filterData={filterData}
-        onApply={handleApplyFilters}
-        setSelectedAttributes={setSelectedAttributes}
-        selectedAttributes={selectedAttributes}
-      />
+      {
+        open && (
+
+          <Filtertheme1
+            open={open}
+            category={category}
+            setOpen={setOpen}
+            filterData={filterData}
+            onApply={handleApplyFilters}
+            setSelectedAttributes={setSelectedAttributes}
+            selectedAttributes={selectedAttributes}
+          />
+        )
+      }
     </>
   );
 };

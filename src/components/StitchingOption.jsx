@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Eye, Scissors } from "lucide-react";
 import "./style/StitchingOption.css"
 import PriceConverter from "./PriceConverter";
-const StitchingOptions = ({ stitching }) => {
+const StitchingOptions = ({ stitching ,isCatalogue}) => {
     const [openMeasurements, setOpenMeasurements] = useState(null);
 
     if (!stitching || stitching.length === 0) return null;
@@ -26,9 +26,18 @@ const StitchingOptions = ({ stitching }) => {
                         <li key={idx} className="flex items-center gap-2">
                             <span>
                                 {s.option?.name}{" "}
-                                {s.option?.price && (
+                                {
+                                    isCatalogue ? (
+                                        s.option?.catalogue_price && <span className="text-gray-600 text-xs"><PriceConverter price={s.option.catalogue_price} /></span>
+                                    ):(
+                                        s.option?.price && 
                                     <span className="text-gray-600 text-xs"><PriceConverter price={s.option.price} /></span>
-                                )}
+                                
+                                    )
+                                }
+                                {/* {s.option?.price && (
+                                    <span className="text-gray-600 text-xs"><PriceConverter price={s.option.price} /></span>
+                                )} */}
                             </span>
                             {measurements.length > 0 && (
                                 <button

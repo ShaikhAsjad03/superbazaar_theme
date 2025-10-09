@@ -6,7 +6,7 @@ import EmptyCart from "./components/EmptyCart";
 import CartItems from "./CartItems";
 import Breadcrum from "../components/BreadCrums/Breadcrum";
 
-const CartPageTheme2 = () => {
+const CartPageTheme2 = ({ webSetting }) => {
   const { CartData } = useSelector((state) => state.cartItem);
   const [cartItems, setCartItemsState] = useState([]);
   useEffect(() => {
@@ -22,7 +22,7 @@ const CartPageTheme2 = () => {
         ) : cartItems?.length === 0 ? (
           Array.isArray(cartItems) && cartItems.length === 0 && <EmptyCart />
         ) : (
-          Array.isArray(cartItems) && cartItems.length > 0 && <CartItems cartItems={cartItems} />
+          Array.isArray(cartItems) && cartItems.length > 0 && <CartItems cartItems={cartItems} webSetting={webSetting} />
         )
       }
     </div >

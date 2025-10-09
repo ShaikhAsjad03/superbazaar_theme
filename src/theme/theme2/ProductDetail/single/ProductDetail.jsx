@@ -20,6 +20,39 @@ import { openCart } from "@/store/slice/MiniCartSlice";
 import shouldShowPrice from "@/helper/shouldShowPrice";
 import { getWebSetting } from "@/services/webSetting";
 import { setWebSetting } from "@/store/slice/webSettingSlice";
+import Head from "next/head";
+
+// app/retail/[category]/[url]/page.jsx
+export async function generateMetadata({ params }) {
+  const product = await getProductData(params.url);
+
+  const productPageUrl = `https://www.sareesbazaar.com/retail/${params.category}/${params.url}`;
+  const productImageUrl = `https://cdn.superbazaar.in/${product.image[0]}`;
+
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      url: productPageUrl,
+      images: [
+        {
+          url: productImageUrl,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      type: "product",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description: product.description,
+      images: [productImageUrl],
+    },
+  };
+}
 
 const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
   const dispatch = useDispatch()
@@ -36,6 +69,32 @@ const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
     const data = await getWebSetting();
     dispatch(setWebSetting(data));
   }
+
+  const productPageUrl = window?.location?.href
+  const productImageUrl = product.image[0];
+  const productName = product.name;
+
+  const handleShareFacebook = () => {
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productPageUrl)}`;
+    window.open(shareUrl, "_blank", "noopener,noreferrer,width=600,height=400");
+  };
+
+  const handleShareWhatsApp = () => {
+    // const shareUrl = "https://www.superbazaar.in/retail/new-arrivals/mahotsav-erisha-s3689-to-s3693-designer-saree-erisha-s3690";
+    const shareUrl = "https://sareesbazaar.in/cdn/shop/files/SB29_SanaV3_7580_e25af623-8707-415a-bd64-6db1e75a89c6.jpg?v=1741333131&width=840";
+
+    const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareUrl)}`;
+    window.open(whatsappLink, "_blank");
+  };
+
+  const handleShareTwitter = () => {
+    const productPageUrl = `https://sareesbazaar.com/retail/${category}/${product.url}`;
+    const tweetText = `${product.name} - Check this out!`;
+    const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productPageUrl)}&text=${encodeURIComponent(tweetText)}`;
+
+    window.open(twitterUrl, "_blank", "noopener,noreferrer,width=600,height=400");
+  };
+
 
   useEffect(() => {
     fetchData();
@@ -101,6 +160,21 @@ const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
   };
   return (
     <>
+      <Head>
+        <meta property="og:title" content={product.name} />
+        <meta property="og:description" content="Step into elegance..." />
+        <meta property="og:image" content={productImageUrl} />
+        <meta property="og:url" content={productPageUrl} />
+        <meta property="og:type" content="product" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@YourTwitterHandle" />
+        <meta name="twitter:title" content={product.name} />
+        <meta name="twitter:description" content={product.description} />
+        <meta name="twitter:image" content={`https://cdn.superbazaar.in/${product.image[0]}`} />
+      </Head>
+
+
       <Breadcrum category={category} name={product.name} />
       <div className="container mx-auto px-4 mt-7">
         <div className="flex flex-wrap -mx-4">
@@ -118,17 +192,16 @@ const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
                 </h2>}
               <h5 className="text-[18px] mb-1">{product.name}</h5>
               <p className="text-gray-600 mb-2">SKU:{product.sku}</p>
-              {shouldShowPrice(session?.accessToken, webSetting?.showPrice) ?
+              {shouldShowPrice(session?.accessToken, webSetting) ?
                 <div className="mb-4">
-                  <span className="line-through "><PriceConverter price={product.offer_price} /></span>
-                  <span className=" text-gray-400 mx-3"><PriceConverter price={product.retail_price} /></span>
+                  <span className=" "><PriceConverter price={product.offer_price} /></span>
+                  {product?.retail_discount !== 0 && <span className=" text-gray-400 mx-3 line-through"><PriceConverter price={product.retail_price} /></span>}
                 </div> : (
                   <button
                     type="button"
                     name="add"
                     onClick={() => router.push("/login")}
                     className="w-full mb-3 bg-red-500 text-white hover:bg-gray-700 py-2 px-4 rounded-none text-center"
-
                   >
                     <span className="text-sm">LOGIN / REGISTER FOR PRICE</span>
                   </button>
@@ -187,8 +260,8 @@ const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
                         type="submit"
                         className="bg-white hover:bg-black hover:text-white text-black outline-1 px-6 py-2 rounded-md transition"
                       >
-                        Add to cart
-                        {/* {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : " Add to cart"} */}
+                        {/* Add to cart */}
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : " Add to cart"}
                       </button>
                     </div>
                   </div>
@@ -196,21 +269,24 @@ const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
                   <div className="flex items-center justify-center gap-3 w-full md:w-1/3">
                     <button
                       title="Share on Facebook"
-                      className="p-2 rounded-md border border-s border-gray-400 hover:bg-blue-100"
+                      onClick={handleShareFacebook}
+                      className="p-2 py-2 rounded-md border border-s border-gray-400 hover:bg-gray-100"
                     >
-                      <Facebook className="w-6 h-6 text-blue-600" />
+                      <Facebook className=" text-black" size={18} />
                     </button>
                     <button
                       title="Share on WhatsApp"
-                      className="p-2 rounded-md border border-s border-gray-400 hover:bg-green-100 "
+                      onClick={handleShareWhatsApp}
+                      className="p-2 py-2 rounded-md border border-s border-gray-400 hover:bg-gray-100"
                     >
-                      <MessageCircle className="w-6 h-6 text-green-500" />
+                      <MessageCircle className="text-black" size={18} />
                     </button>
                     <button
                       title="Share on Twitter"
-                      className="p-2 border rounded-md border-s border-gray-400 hover:bg-sky-100"
+                      onClick={handleShareTwitter}
+                      className="p-2 border rounded-md border-s py-2 border-gray-400 hover:bg-gray-100"
                     >
-                      <Twitter className="w-6 h-6 text-sky-500" />
+                      <Twitter className="text-black" size={18} />
                     </button>
                   </div>
 
@@ -241,7 +317,7 @@ const ProductDetailTheme2 = ({ product, Stitching, attributes, category }) => {
         </div>
       </div>
       <div>
-        <RealtedProduct url={product.url} />
+        <RealtedProduct url={product.url} webSetting={webSetting} />
       </div>
     </>
 
