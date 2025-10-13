@@ -21,9 +21,9 @@ const Popups = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getPopups();
-      const active =data && data?.filter((p) => p.isActive);
+      const active =data && Array.isArray(data) && data?.filter((p) => p.isActive);
 
-      const filtered = active.filter((popup) => {
+      const filtered = Array.isArray(active) && active?.filter((popup) => {
         const closedData = localStorage.getItem(`popup_closed_${popup.id}`);
         if (!closedData) return true;
 
@@ -40,7 +40,7 @@ const Popups = () => {
   }, []);
 
   useEffect(() => {
-    popups.forEach((popup) => {
+    popups && popups?.length > 0 && popups?.forEach((popup) => {
       setTimeout(() => {
         setVisiblePopups((prev) => {
           if (prev.find((p) => p.id === popup.id)) return prev;

@@ -140,8 +140,9 @@ const SearchBar = () => {
                       key={cat.id}
                       className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer"
                       onClick={() => {
+                        console.log(cat?.categories?.[0])
                         router.push(
-                          `/catalogue/${cat?.categories?.[0]?.url}/${cat.url}`
+                          `/catalogue/${cat?.categories?.[0]?.menus?.[0]?.url}/${cat.url}`
                         );
                         setSearchTerm("");
                         setShowSuggestions(false);
@@ -182,7 +183,7 @@ const SearchBar = () => {
                       className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer"
                       onClick={() => {
                         router.push(
-                          `/retail/${product?.categories?.[0]?.url}/${product.url}`
+                          `/retail/${product?.categories?.[0]?.menus?.[0]?.url}/${product.url}`
                         );
                         setSearchTerm("");
                         setShowSuggestions(false);

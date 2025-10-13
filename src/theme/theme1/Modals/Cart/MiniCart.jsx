@@ -19,7 +19,7 @@ const MiniCart = ({ webSetting }) => {
   const isCartOpen = useSelector((state) => state.minicart.isCartOpen);
   const { CartData } = useSelector((state) => state.cartItem);
   const { list, selected } = useSelector((state) => state.currency);
-    const currencyData = list?.find((c) => c.code === selected?.code);
+    const currencyData = Array.isArray(list) && list?.find((c) => c.code === selected?.code);
   const [cartItems, setCartItemsState] = useState([]);
   const [openCatalogueIds, setOpenCatalogueIds] = useState([]);
   const [error, setError] = useState(null)

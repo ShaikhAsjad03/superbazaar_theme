@@ -41,30 +41,37 @@ const Search = () => {
         fetchData();
     }, [active, search]);
 
-    const renderCatalogues = () => (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 border-b mb-5 border-gray-400">
-            {catalogues.map((item, index) => (
-                <div key={index}>
-                    <CatalogueCard
-                        data={item}
-                        redirectUrl={`catalogue/${item?.CatalogueCategory?.[0]?.category?.url}`}
-                    />
-                </div>
-            ))}
-        </div>
-    );
+   const renderCatalogues = () => (
+  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 border-b mb-5 border-gray-400">
+    {catalogues.map((item, index) => {
+      const redirectUrl = item?.CatalogueCategory?.find(
+        (cat) => cat?.category?.menus?.length > 0 && cat.category.menus[0]?.url
+      )?.category?.menus?.[0]?.url;
 
-    const renderProducts = () => (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((item, index) => (
-                <div key={index}>
-                    <ProductCard
-                        data={item}
-                        redirectUrl={item.categories?.[0]?.category?.url} />
-                </div>
-            ))}
+      return (
+        <div key={index}>
+          <CatalogueCard data={item} redirectUrl={`catalogue/${redirectUrl}`} />
         </div>
-    );
+      );
+    })}
+  </div>
+);
+
+const renderProducts = () => (
+  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {products.map((item, index) => {
+      const redirectUrl = item?.categories?.find(
+        (cat) => cat?.category?.menus?.length > 0 && cat.category.menus[0]?.url
+      )?.category?.menus?.[0]?.url;
+
+      return (
+        <div key={index}>
+          <ProductCard data={item} redirectUrl={redirectUrl} />
+        </div>
+      );
+    })}
+  </div>
+);
 
     return (
         <div
