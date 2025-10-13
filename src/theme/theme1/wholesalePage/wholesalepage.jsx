@@ -5,7 +5,7 @@ import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import { SlidersHorizontal, LayoutList, Grip, GripVertical } from "lucide-react";
 import { useEffect, useState } from "react";
 import CategorySidebar from "./components/categorySidebar";
-import { getAllCatalogue } from "@/services/catalogueService";
+import { getAllCatalogue, getCategory } from "@/services/catalogueService";
 
 const WholeSalePage = () => {
     const [grid, setGrid] = useState(4);
@@ -15,28 +15,37 @@ const WholeSalePage = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedcategory, setselectedcategory] = useState([]);
+    const [categoryData,setcategoryData]=useState([])
     const [totalCount, setTotalCount] = useState(0);
+
+    useEffect(()=>{
+fetchCategory()
+    },[])
+
     const fetchData = async (page = 1, selectedCategory = []) => {
         try {
             setLoading(true);
 
-            let category =
-                selectedCategory.length > 0
+            let category = selectedCategory.length > 0
                     ? `&categories=${selectedCategory.join(",")}`
                     : "";
 
             const response = await getAllCatalogue(page, category, null, sort);
-
             setData(response.data);
             setTotalCount(response.totalCount || 0);
             setPage(page);
         } catch (error) {
-            console.error("Error fetching data:", error);
             setData([]);
         } finally {
             setLoading(false);
         }
     };
+    const fetchCategory=async()=>{
+      const data= await getCategory()
+      setcategoryData(data?.data || [])
+
+    }
+
 
 
     useEffect(() => {
@@ -159,6 +168,7 @@ const WholeSalePage = () => {
                     selectedcategory={selectedcategory}
                     setselectedcategory={setselectedcategory}
                     open={open}
+                    data={categoryData}
                 />
             )}
         </div>

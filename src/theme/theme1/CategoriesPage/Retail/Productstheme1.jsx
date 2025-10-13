@@ -272,7 +272,7 @@ const Productstheme1 = ({ category }) => {
         {Array.isArray(pageData) && pageData.length > 0 && pageData.map((item, i) => (
           <div
             key={i}
-            className="prose max-w-none mb-6"
+            className="prose max-w-none mb-6 mt-20"
             dangerouslySetInnerHTML={{ __html: item.htmlContent }}
           />
         ))}

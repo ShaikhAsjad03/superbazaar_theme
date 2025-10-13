@@ -1,15 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { CircleQuestionMark, Heart, MessageCircle, Repeat, Share2, ShoppingCart, X } from "lucide-react";
-import OfferBanner from "@/components/OfferBanner";
+import { CircleQuestionMark, Heart, MessageCircle, Share2, ShoppingCart, X } from "lucide-react";
 import ProductImageGallery from "./components/ProductImageGallery";
 import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
-import { openCart } from "@/store/slice/MiniCartSlice";
 import { useModal } from "@/hooks/useModal";
-import { addToCartProduct, getCartItems } from "@/services/cartService";
-import { setCartItems } from "@/store/slice/cartItemSlice";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { ImageUrl } from "@/helper/imageUrl";
@@ -17,6 +13,7 @@ import { clearPendingAction, setPendingAction } from "@/store/slice/pendingActio
 import { performAddToCart } from "@/helper/performAddToCart";
 import PriceVisibilityProductDetail from "@/components/PriceVisibilityProductDetail";
 import ProductSizeChart from "@/components/ProductSizeChart";
+import WishlistButton from "@/components/cards/attribute/WishlistButton";
 const SizeSelector = dynamic(() => import("@/components/SizeSelector"));
 const SharePopup = dynamic(() => import("./components/SharePopup"));
 const RalatedProduct = dynamic(() => import("./components/RelatedProduct"));
@@ -42,10 +39,7 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
   const increment = () => setQuantity((prev) => prev + 1);
   const decrement = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   const toggleWishlist = () => setWishlist((prev) => !prev);
-  const toggleCompare = () => setCompare((prev) => !prev);
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
-
   useEffect(() => {
     if (session?.accessToken && pendingAction?.type === "ADD_TO_CART" && token) {
       performAddToCart(
@@ -58,7 +52,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
       dispatch(clearPendingAction());
     }
   }, [session?.accessToken, pendingAction, token]);
-
   const handleAddtoCart = async () => {
     setErrors(null);
     if (product.optionType === "Size" && !selectedSize) {
@@ -116,8 +109,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
     //   setLoading(false);
     // }
   };
-
-
   return (
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -126,7 +117,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
             images={product.image}
             thumbs={product.thumbImage} />
         </div>
-
         <div className="flex flex-col gap-4 md:gap-4">
           <div className="w-full space-y-2 sm:space-y-3">
             <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
@@ -140,7 +130,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
                 </Link>
               ))}
             </div>
-
             <div className="text-xs sm:text-sm">
               <span className="text-gray-700">View Full Catalogue: </span>
               {product?.catalogue?.url && (
@@ -152,7 +141,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
                 </Link>
               )}
             </div>
-
             <h1 className="text-sm sm:text-xl md:text-2xl font-medium">
               {product?.name}
             </h1>
@@ -162,17 +150,14 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
               retailPrice={product?.retail_price}
               retailDiscount={product?.retail_discount}
             />
-
           </div>
           <div className="flex justify-between">
             <p className="flex items-center gap-2 bg-slat-100 text-zinc-800 font-medium px-3 py-1 rounded-lg w-fit">
               <span className="font-bold">⏱</span> Dispatch Time: 7 Working Days
             </p>
             <ProductSizeChart product={product} />
-            {/* <p className="mt-2">Sizecharts</p> */}
           </div>
           <MoreColors moreColors={attributes.moreColors} basepath={category} />
-          {/* <OfferBanner discount={product.retail_discount} /> */}
           {product.optionType === "Size" ? (
             <div className="-mt-1">
               <SizeSelector
@@ -184,7 +169,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
             </div>) : (
             <StitchingForm stitchingData={Stitching} onChange={setStitchingData} />
           )}
-
           <div className="flex items-center gap-4 mt-4">
             <div className="flex items-center border rounded-lg overflow-hidden w-40">
               <button
@@ -201,14 +185,14 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
                 +
               </button>
             </div>
-            <button
-              onClick={toggleWishlist}
-              className={`p-2 rounded-lg border transition ${wishlist
-                ? "bg-zinc-900 text-white border-zinc-900"
-                : "bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white"
-                }`}>
-              <Heart className="w-5 h-5" />
-            </button>
+
+             <WishlistButton
+      variant="detail"
+      productId={product?.id}
+      type="product"
+      loginMode="page"
+      className="w-full sm:w-auto"
+    />
             <button
               onClick={() => setShareOpen(true)}
               className="p-2 rounded-lg border bg-white text-gray-700 border-zinc-900 hover:bg-zinc-900 hover:text-white transition">
@@ -220,7 +204,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
               <CircleQuestionMark className="w-5 h-5" />
             </button>
           </div>
-
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4 w-full">
             <button
               disabled={loading}
@@ -236,18 +219,15 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
               </span>
               {loading && <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />}
             </button>
-
             <button
               className="w-full flex items-center justify-center 
                gap-2 bg-green-700 text-white 
                px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base 
-               rounded-lg hover:bg-green-600 transition"
-            >
+               rounded-lg hover:bg-green-600 transition">
               <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               Order on WhatsApp
             </button>
           </div>
-
           {errors && (
             <div className="bg-red-200 border border-dotted border-red-400 text-red-600 px-4 py-3 rounded relative mt-2 flex items-start justify-between" role="alert">
               <div>
@@ -260,8 +240,6 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
             </div>
           )}
           <div className="border-t border-gray-500 border-dashed mt-3"></div>
-
-
           <div>
             <StaticImage />
           </div>
@@ -282,15 +260,12 @@ const ProductDetailTheme1 = ({ product, Stitching, attributes, category }) => {
         url={product.url}
         CopyUrl={`retail/${category}/${product.url}`}
       />
-
       <InquiryForm
         open={inquiry}
         onClose={() => setInquiry(false)}
         catalogue_id={null}
         product_id={product.id}
       />
-
-
     </div>
   );
 };

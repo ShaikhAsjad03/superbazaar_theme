@@ -28,7 +28,6 @@ export const getRelatedCatalogue = async (url) => {
      return { success: false, error: error?.response?.data || error.message };
   }
 };
-
 export const getAllCatalogue = async (page, category, perPage = 20, sortOption) => {
   try {
     const url = `/public/wholesale?page=${page}&perPage=20${category}&sortOption=${sortOption}`
@@ -41,4 +40,14 @@ export const getAllCatalogue = async (page, category, perPage = 20, sortOption) 
   }
 };
 
+
+export const getCategory = async (url) => {
+  try {
+    const axiosInstance = await createClientAxios();
+    const res = await axiosInstance.get(`/public/category`);
+    return res.data;
+  } catch (error) {
+    return { success: false, error: error?.response?.data || error.message };
+  }
+};
 

@@ -29,7 +29,7 @@ const BrandsList = () => {
       const response = await getBrandListing(perPage, currentPage, debouncedSearch);
       setData(response);
     } catch (error) {
-      console.error("Error fetching brands:", error);
+      setData([])
     } finally {
       setLoading(false);
     }

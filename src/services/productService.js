@@ -29,7 +29,6 @@ export const getCategoryProducts = async (
 
     return res.data;
   } catch (error) {
-    console.error("Error fetching category products:", error);
     return { success: false, error: error?.response?.data || error.message };
   }
 };
@@ -39,7 +38,6 @@ export const getCategoryFilter = async (url) => {
     const res = await axiosInstance.get(`/public/filter/${url}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching category filter   :", error);
     return { success: false, error: error?.response?.data || error.message };
   }
 };
@@ -58,7 +56,6 @@ export const getProductStitching = async (url) => {
     const res = await axiosInstance.get(`/public/product-stitching/${url}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product stitching:", error);
     return { success: false, error: error?.response?.data || error.message };
   }
 };
@@ -68,7 +65,6 @@ export const getProductAttributes = async (url) => {
     const res = await axiosInstance.get(`/public/product-attributes/${url}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product attributes:", error);
     return { success: false, error: error?.response?.data || error.message };
   }
 };
@@ -78,7 +74,6 @@ export const getRelatedProduct = async (url) => {
     const res = await axiosInstance.get(`/public/related-product/${url}`);
     return res.data;
   } catch (error) {
-    console.error("Error fetching product detail:", error);
     return { success: false, error: error?.response?.data || error.message };
   }
 };
@@ -101,7 +96,6 @@ export const getWholeSaleProductslists = async (
 
     return res.data;
   } catch (error) {
-    console.error("Error fetching category products:", error);
     return { success: false, error: error?.response?.data || error.message };
   }
 };

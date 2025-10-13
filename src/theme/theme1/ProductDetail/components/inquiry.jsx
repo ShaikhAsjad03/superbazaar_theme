@@ -21,6 +21,7 @@ const InquiryForm = ({ open, onClose, product_id, catalogue_id }) => {
         handleSubmit,
         isSubmitting,
         touched,
+        resetForm,
         setFieldValue,
     } = useFormik({
         initialValues,
@@ -50,12 +51,13 @@ const InquiryForm = ({ open, onClose, product_id, catalogue_id }) => {
             document.body.style.overflow = "hidden";
         } else {
             document.body.style.overflow = "";
+             resetForm();
         }
 
         return () => {
             document.body.style.overflow = "";
         };
-    }, [open]);
+    }, [open, resetForm]);
 
     return (
         <div

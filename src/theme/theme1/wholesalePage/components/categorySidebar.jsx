@@ -3,10 +3,9 @@
 import { useSelector } from "react-redux";
 import { X } from "lucide-react";
 
-const CategorySidebar = ({ onClose, onFilterChange, selectedcategory, setselectedcategory, open }) => {
+const CategorySidebar = ({ onClose, onFilterChange, selectedcategory, setselectedcategory, open,data }) => {
 
-  const { data } = useSelector((state) => state.categorystore) || [];
-  const filtermenu = data.filter((item) => item.url !== "wholesale");
+  const filtermenu = data.filter((item) => item.name !== "Wholesale");
   const handleCheckboxChange = (url) => {
     const updatedSelected = selectedcategory.includes(url)
       ? selectedcategory.filter((item) => item !== url)
@@ -44,8 +43,8 @@ const CategorySidebar = ({ onClose, onFilterChange, selectedcategory, setselecte
                   type="checkbox"
                   id={`filter-${index}`}
                   className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  checked={selectedcategory.includes(item.url)}
-                  onChange={() => handleCheckboxChange(item.url)}
+                  checked={selectedcategory.includes(item.id)}
+                  onChange={() => handleCheckboxChange(item.id)}
                 />
                 <label
                   htmlFor={`filter-${index}`}

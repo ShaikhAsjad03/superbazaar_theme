@@ -39,7 +39,6 @@ export default function ContactClient({ webSetting }) {
                     resetForm();
                     router.push("/");
                 } else {
-                    console.error(response?.data?.message || "Something went wrong.");
                 }
             } catch (error) {
                 console.error("Error in contact form:", error);

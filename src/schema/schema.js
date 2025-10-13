@@ -58,9 +58,10 @@ export const addressschema = Yup.object({
 
 export const inquirySchema = Yup.object({
   email: Yup.string().email("Invalid email").required("Email is required"),
-  mobile_number: Yup.string().required("Mobile number is required"),
+   mobile_number: Yup.string()
+    .matches(/^[6-9]\d{9}$/, "Invalid mobile number")
+    .required("Mobile number is required"),
   description: Yup.string().required("Description is required"),
-
 })
 
 export const bankPaymentSchema = Yup.object({

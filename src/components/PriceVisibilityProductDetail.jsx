@@ -41,19 +41,18 @@ const PriceVisibilityProductDetail = ({ offerPrice, retailPrice, retailDiscount 
         <PriceConverter price={offerPrice} />
       </span>
 
-      
+{Number(retailDiscount) > 0 && (
+  <span className="text-sm sm:text-base text-zinc-700 line-through">
+    <PriceConverter price={retailPrice} />
+  </span>
+)}
 
-      {retailDiscount && retailDiscount !== 0 && (
-        <span className="text-sm sm:text-base text-zinc-700 line-through">
-          <PriceConverter price={retailPrice} />
-        </span>
-      )}
+{Number(retailDiscount) > 0 && (
+  <span className="text-sm sm:text-base font-semibold text-green-600">
+    {retailDiscount}% OFF
+  </span>
+)}
 
-      {retailDiscount && retailDiscount !== 0 && retailPrice && offerPrice && (
-        <span className="text-sm sm:text-base font-semibold text-green-600">
-          {retailDiscount}% OFF
-        </span>
-      )}
     </div>
   );
 };

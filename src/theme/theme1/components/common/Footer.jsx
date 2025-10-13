@@ -224,7 +224,7 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-gray-700 text-center py-4 text-sm text-gray-400">
-        © {new Date().getFullYear()} SuperBazaar. All Rights Reserved.
+        © {new Date().getFullYear()} {webSetting?.copyRightText}
       </div>
     </footer>
   )

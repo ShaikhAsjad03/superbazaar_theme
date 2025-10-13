@@ -88,7 +88,6 @@ const CheckoutAddress = ({ onCountryChange, onAddressChange }) => {
           setShowForm(false);
         }
       } catch (error) {
-        console.error(error);
       } finally {
         setSubmitting(false);
       }

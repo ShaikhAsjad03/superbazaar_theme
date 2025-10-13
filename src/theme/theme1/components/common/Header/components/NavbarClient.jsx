@@ -116,10 +116,10 @@ const NavbarClient = ({ Menudata, currencyData }) => {
     >
       <div className="flex items-center justify-between relative">
         <div className="flex items-center gap-2">
-          <div className="sm:hidden cursor-pointer">
+          <div className="lg:hidden cursor-pointer">
             <MenuIcon className="w-6 h-6 text-gray-500 " onClick={handleMenu} />
           </div>
-          <div className="hidden sm:flex">
+          <div className="hidden lg:flex">
             <Link href="/">
               <Image
                 src="/logo.png"
@@ -133,11 +133,11 @@ const NavbarClient = ({ Menudata, currencyData }) => {
         </div>
 
         <div className="flex-1 max-w-lg mx-3 relative">
-          <div className="hidden sm:block">
+          <div className="hidden lg:block">
             <SeachBar />
           </div>
 
-          <div className="sm:hidden flex justify-center">
+          <div className="lg:hidden flex justify-center">
             <Link href="/">
               <Image
                 src="/logo.png"
@@ -155,9 +155,9 @@ const NavbarClient = ({ Menudata, currencyData }) => {
           ref={dropdownRef}
         >
           <CurrencySelector currencyData={currencyData} />
-          <div className="sm:hidden">
+          <div className="lg:hidden">
             <Search
-              className="cursor-pointer text-zinc-800 w-5 h-5 sm:w-6 sm:h-6"
+              className="cursor-pointer text-zinc-800 w-5 h-5 lg:w-6 lg:h-6"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
             />
           </div>
@@ -263,7 +263,7 @@ const NavbarClient = ({ Menudata, currencyData }) => {
       <MobileMenu open={menuOpen} handleMenu={handleMenu} Menudata={Menudata} />
 
       {mobileSearchOpen && (
-        <div className="sm:hidden absolute top-full left-0 w-full bg-white shadow-md z-40 animate-slideDown px-2 py-2">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white shadow-md z-40 animate-slideDown px-2 py-2">
           <div className="w-full">
             <SeachBar className="w-full" />
           </div>

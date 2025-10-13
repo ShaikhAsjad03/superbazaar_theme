@@ -4,31 +4,39 @@ import { ArrowRightFromLine } from "lucide-react";
 import Address from "./components/address";
 import PaymentMethod from "./components/paymentMethod";
 import OrderSummary from "./components/OrderSummary";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ShippingMethod from "./components/ShippingMethod";
 import { postCCAvenueOrder, postOrder } from "@/services/checkOutService";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { setCartItems } from "@/store/slice/cartItemSlice";
+import { getCartItems } from "@/services/cartService";
 const CheckoutPage = () => {
   const router=useRouter()
+  
+  const dispatch=useDispatch()
+    const { data: session } = useSession();
   const { webSetting } = useSelector((state) => state.webSetting);
   const [country, setCountry] = useState("India");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [orderPlaced, setOrderPlaced] = useState(false);
+
 
   const { CartData } = useSelector((state) => state?.cartItem);
   const totalWeight = Array.isArray(CartData?.data)
     ? CartData.data.reduce((acc, item) => acc + (item.weight || 0) * item.quantity, 0)
     : 0;
+   useEffect(() => {
+  if (orderPlaced) return;
+  const { valid } = validateCheckout();
+  if (!valid) {
+    router.push("/cart");
+  }
+}, [CartData, orderPlaced]);
 
-
-    useEffect(() => {
-    const { valid, message } = validateCheckout();
-    if (!valid) {
-      router.push("/cart"); 
-    }
-  }, [CartData]);
   
   const [payload, setPayload] = useState({
     billingAddress: null,
@@ -37,6 +45,12 @@ const CheckoutPage = () => {
     shippingMethod: null,
   });
 
+
+  const fetchProtectedData = async () => {
+     const cartItems=await getCartItems(session?.user?.id);
+     dispatch(setCartItems(cartItems));
+     
+    };
   const handlePlaceOrder = async () => {
     setErrorMsg("");
     setSuccessMsg("");
@@ -77,9 +91,12 @@ const CheckoutPage = () => {
 
       }
 
-      if (response?.isSuccess) {
-        setSuccessMsg("Order placed successfully!");
-      } else {
+    if (response?.isSuccess) {
+  setOrderPlaced(true); 
+  fetchProtectedData();
+  // setSuccessMsg("Order placed successfully!");
+  router.push("/account/orders");
+} else {
         setErrorMsg(response?.message || "Failed to place order. Try again.");
       }
     } catch (err) {

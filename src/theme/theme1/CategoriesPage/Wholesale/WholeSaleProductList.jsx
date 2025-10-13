@@ -25,6 +25,8 @@ const WholeSaleProductList = ({ category }) => {
         setLoading(true);
         try {
             const res = await getWholeSaleProductslists(category, page, 20, sort);
+              const pageData = await getPageContent(category)
+                  setPageData(pageData)
             setProducts(res.data || []);
             setTotalCount(res?.totalCount || 0);
         } catch (err) {
@@ -184,6 +186,14 @@ const WholeSaleProductList = ({ category }) => {
                     onPageChange={(p) => setPage(p)}
                 />
             </div>
+
+             {Array.isArray(pageData) && pageData.length > 0 && pageData.map((item, i) => (
+          <div
+            key={i}
+            className="prose max-w-none mb-6 mt-20"
+            dangerouslySetInnerHTML={{ __html: item.htmlContent }}
+          />
+        ))}
         </div>
     );
 };
